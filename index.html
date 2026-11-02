@@ -295,11 +295,14 @@
       <div class="week-chip">NOV 2 – 8</div>
     </header>
 
-    <div class="filter-tabs">
-      <button class="tab-btn active" onclick="setFilter('all', this)">All</button>
-      <button class="tab-btn" onclick="setFilter('today', this)">Today</button>
-      <button class="tab-btn" onclick="setFilter('work', this)">Work</button>
-      <button class="tab-btn" onclick="setFilter('personal', this)">Personal</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:6px;">
+      <div class="filter-tabs" style="margin-bottom:0;">
+        <button class="tab-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="tab-btn" onclick="setFilter('today', this)">Today</button>
+        <button class="tab-btn" onclick="setFilter('work', this)">Work</button>
+        <button class="tab-btn" onclick="setFilter('personal', this)">Personal</button>
+      </div>
+      <button class="tab-btn" style="background:rgba(245,158,11,0.15);color:#fbbf24;border-color:rgba(245,158,11,0.3);font-size:11px;padding:6px 10px;" onclick="rolloverUnticked()">🔄 Rollover</button>
     </div>
 
     <div class="count-bar">
@@ -567,7 +570,36 @@
       });
     }
 
+    
+    function rolloverUnticked() {
+      // Find all unticked tasks in Today
+      const todayRows = document.querySelectorAll('.day-card[data-day="today"] .task-item:not(.completed)');
+      if (todayRows.length === 0) {
+        alert("Great job! All of today's tasks are already ticked.");
+        return;
+      }
+      const tomorrowGroup = document.querySelectorAll('.day-card[data-day="future"] .task-group')[0];
+      if (!tomorrowGroup) return;
+
+      let moved = 0;
+      todayRows.forEach(row => {
+        // Tag as rolled over
+        const meta = row.querySelector('.t-meta');
+        if (meta && !meta.innerHTML.includes('Rolled Over')) {
+          const badge = document.createElement('span');
+          badge.className = 'tag tag-hold';
+          badge.innerText = 'Rolled Over';
+          meta.appendChild(badge);
+        }
+        tomorrowGroup.appendChild(row);
+        moved++;
+      });
+      updateCounts();
+      alert("Moved " + moved + " unticked task(s) to Tomorrow!");
+    }
+
     loadState();
+
   </script>
 </body>
 </html>
