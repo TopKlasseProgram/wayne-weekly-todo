@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wayne's Weekly Schedule</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #111827;
+      --card-inner: #151e32;
+      --border: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dim: rgba(56, 189, 248, 0.12);
+      --green: #10b981;
+      --green-dim: rgba(16, 185, 129, 0.12);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245, 158, 11, 0.12);
+      --purple: #a855f7;
+      --purple-dim: rgba(168, 85, 247, 0.12);
+      --rose: #f43f5e;
+      --rose-dim: rgba(244, 63, 94, 0.12);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+      min-height: 100vh;
+      padding: 16px 14px 90px;
+      padding-top: max(16px, env(safe-area-inset-top));
+    }
+    .app-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Top App Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .week-chip {
+      background: var(--accent-dim);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Filter Pills */
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .tab-btn.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+
+    /* Counter Bar */
+    .count-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .c-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .c-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .c-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Day Section */
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .day-hdr {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .day-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .d-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .p-today { background: var(--green-dim); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .p-norm { background: rgba(255, 255, 255, 0.04); color: var(--muted); border: 1px solid var(--border); }
+    .p-off { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .p-visit { background: var(--purple-dim); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
+
+    /* Task Item (Mobile Touch Target) */
+    .task-group {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .task-item {
+      background: var(--card-inner);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 48px;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .task-item:active {
+      background: rgba(255, 255, 255, 0.05);
+      transform: scale(0.99);
+    }
+    .task-item.completed {
+      opacity: 0.45;
+    }
+    .task-item.completed .t-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .chk {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      border: 2px solid #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all .15s ease;
+    }
+    .task-item.completed .chk {
+      background: #10b981;
+      border-color: #10b981;
+    }
+    .chk::after {
+      content: "✓";
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: none;
+    }
+    .task-item.completed .chk::after { display: block; }
+    .t-main { flex: 1; }
+    .t-text {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #f1f5f9;
+      line-height: 1.4;
+    }
+    .t-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .tag-w { background: var(--accent-dim); color: var(--accent); }
+    .tag-p { background: var(--rose-dim); color: #fb7185; }
+    .tag-rd { background: var(--purple-dim); color: #c084fc; }
+    .tag-hold { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* Sticky Bottom Quick Add */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px max(12px, env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+    .add-row {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+    .add-inp {
+      flex: 1;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrap">
+    <header>
+      <div class="app-title">
+        <span>🎯 Wayne's Schedule</span>
+      </div>
+      <div class="week-chip">NOV 2 – 8</div>
+    </header>
+
+    <div class="filter-tabs">
+      <button class="tab-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="tab-btn" onclick="setFilter('today', this)">Today</button>
+      <button class="tab-btn" onclick="setFilter('work', this)">Work</button>
+      <button class="tab-btn" onclick="setFilter('personal', this)">Personal</button>
+    </div>
+
+    <div class="count-bar">
+      <div class="c-box">
+        <div class="c-label">Total</div>
+        <div class="c-num" id="cTotal">10</div>
+      </div>
+      <div class="c-box">
+        <div class="c-label">Done</div>
+        <div class="c-num" id="cDone" style="color:#10b981">1</div>
+      </div>
+      <div class="c-box">
+        <div class="c-label">Pending</div>
+        <div class="c-num" id="cPending" style="color:#fbbf24">9</div>
+      </div>
+    </div>
+
+    <!-- Mon Nov 2 -->
+    <div class="day-card" data-day="today">
+      <div class="day-hdr">
+        <div class="day-label">Monday, Nov 2</div>
+        <span class="d-pill p-today">TODAY</span>
+      </div>
+      <div class="task-group">
+        <div class="task-item completed" data-type="work" onclick="toggleTask(this, 'm1')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">R&D-to-Production: Sample order data intake & review</div>
+            <div class="t-meta"><span class="tag tag-rd">R&D Sprint</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'm2')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text"><b>Ice Watch:</b> Finish design today <i>(Pending Betty's Bezel)</i></div>
+            <div class="t-meta"><span class="tag tag-hold">Awaiting Bezel</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'm3')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Help Anita: Ask replenishment & new products from OB report</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'm4')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Kick off / Scope Elite Factory System on Lovable</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tue Nov 3 -->
+    <div class="day-card" data-day="future">
+      <div class="day-hdr">
+        <div class="day-label">Tuesday, Nov 3</div>
+        <span class="d-pill p-norm">TOMORROW</span>
+      </div>
+      <div class="task-group">
+        <div class="task-item" data-type="personal" onclick="toggleTask(this, 't1')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">🎂 <b>Get birthday cake</b></div>
+            <div class="t-meta"><span class="tag tag-p">Personal</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 't2')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Build Elite Factory System at Lovable</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 't3')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Betty Design: Disney concepts & Ice Watch review</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wed Nov 4 -->
+    <div class="day-card" data-day="future">
+      <div class="day-hdr">
+        <div class="day-label">Wednesday, Nov 4</div>
+        <span class="d-pill p-off">🌴 DAY OFF</span>
+      </div>
+      <div class="task-group">
+        <div class="task-item" data-type="personal" onclick="toggleTask(this, 'w1')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">🏖️ <b>Off on Wednesday</b> (Personal rest / Day off)</div>
+            <div class="t-meta"><span class="tag tag-p">Personal</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thu Nov 5 -->
+    <div class="day-card" data-day="future">
+      <div class="day-hdr">
+        <div class="day-label">Thursday, Nov 5</div>
+        <span class="d-pill p-visit">🏭 PH FACTORY</span>
+      </div>
+      <div class="task-group">
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'th1')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">🏭 <b>Go to PH Factory</b> (Production & engineering review)</div>
+            <div class="t-meta"><span class="tag tag-w">Factory Visit</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fri Nov 6 -->
+    <div class="day-card" data-day="future">
+      <div class="day-hdr">
+        <div class="day-label">Friday, Nov 6</div>
+        <span class="d-pill p-norm">WRAP-UP</span>
+      </div>
+      <div class="task-group">
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'f1')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Follow up on PH Factory action items & R&D conversion progress</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+        <div class="task-item" data-type="work" onclick="toggleTask(this, 'f2')">
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">Review Ice Watch & Disney final designs with Betty</div>
+            <div class="t-meta"><span class="tag tag-w">Work</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Custom Notes -->
+    <div class="day-card" id="extraCard" style="display:none">
+      <div class="day-hdr">
+        <div class="day-label">Quick Notes & Extra Tasks</div>
+      </div>
+      <div class="task-group" id="extraTasks"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Quick Add Form -->
+  <div class="bottom-bar">
+    <form class="add-row" onsubmit="addExtra(event)">
+      <input type="text" id="quickInp" class="add-inp" placeholder="Type a task or note..." required>
+      <button type="submit" class="add-btn">+ Add</button>
+    </form>
+  </div>
+
+  <script>
+    function loadState() {
+      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo') || '{}');
+      for (const [k, v] of Object.entries(state)) {
+        const item = document.querySelector(`[onclick*="${k}"]`);
+        if (item) {
+          if (v) item.classList.add('completed');
+          else item.classList.remove('completed');
+        }
+      }
+      renderExtras();
+      updateCounts();
+    }
+
+    function toggleTask(el, key) {
+      el.classList.toggle('completed');
+      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo') || '{}');
+      state[key] = el.classList.contains('completed');
+      localStorage.setItem('wayne_mobile_todo', JSON.stringify(state));
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const all = document.querySelectorAll('.task-item').length;
+      const done = document.querySelectorAll('.task-item.completed').length;
+      document.getElementById('cTotal').innerText = all;
+      document.getElementById('cDone').innerText = done;
+      document.getElementById('cPending').innerText = Math.max(0, all - done);
+    }
+
+    function setFilter(type, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.day-card').forEach(card => {
+        if (type === 'today') {
+          card.style.display = card.dataset.day === 'today' ? 'block' : 'none';
+        } else {
+          card.style.display = 'block';
+        }
+      });
+
+      document.querySelectorAll('.task-item').forEach(item => {
+        if (type === 'work') {
+          item.style.display = item.dataset.type === 'work' ? 'flex' : 'none';
+        } else if (type === 'personal') {
+          item.style.display = item.dataset.type === 'personal' ? 'flex' : 'none';
+        } else {
+          item.style.display = 'flex';
+        }
+      });
+    }
+
+    function addExtra(e) {
+      e.preventDefault();
+      const inp = document.getElementById('quickInp');
+      const text = inp.value.trim();
+      if (!text) return;
+      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
+      extras.push({ id: Date.now().toString(), text: text, done: false });
+      localStorage.setItem('wayne_mobile_extras', JSON.stringify(extras));
+      inp.value = '';
+      renderExtras();
+      updateCounts();
+    }
+
+    function toggleExtra(id) {
+      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
+      const updated = extras.map(x => x.id === id ? { ...x, done: !x.done } : x);
+      localStorage.setItem('wayne_mobile_extras', JSON.stringify(updated));
+      renderExtras();
+      updateCounts();
+    }
+
+    function renderExtras() {
+      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
+      const card = document.getElementById('extraCard');
+      const group = document.getElementById('extraTasks');
+      if (extras.length === 0) {
+        card.style.display = 'none';
+        return;
+      }
+      card.style.display = 'block';
+      group.innerHTML = '';
+      extras.forEach(x => {
+        const d = document.createElement('div');
+        d.className = 'task-item' + (x.done ? ' completed' : '');
+        d.setAttribute('onclick', `toggleExtra('${x.id}')`);
+        d.innerHTML = `
+          <div class="chk"></div>
+          <div class="t-main">
+            <div class="t-text">${x.text}</div>
+            <div class="t-meta"><span class="tag tag-w">Note</span></div>
+          </div>
+        `;
+        group.appendChild(d);
+      });
+    }
+
+    loadState();
+  </script>
+</body>
+</html>
