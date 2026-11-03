@@ -570,35 +570,60 @@
 
     let currentView = 'active';
 
-    function getTasks() {
-      const stored = localStorage.getItem('wayne_tasks_v7');
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem('wayne_tasks_v7', JSON.stringify(initialMasterTasks));
-      return initialMasterTasks;
+    // Bulletproof Persistent Completion State
+    function getCompletions() {
+      return JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
     }
 
-    function saveTasks(tasks) {
-      localStorage.setItem('wayne_tasks_v7', JSON.stringify(tasks));
-      render();
+    function saveCompletions(map) {
+      localStorage.setItem('wayne_task_completions', JSON.stringify(map));
+    }
+
+    function getCustomTasks() {
+      return JSON.parse(localStorage.getItem('wayne_custom_tasks') || '[]');
+    }
+
+    function saveCustomTasks(tasks) {
+      localStorage.setItem('wayne_custom_tasks', JSON.stringify(tasks));
+    }
+
+    function getAllTasks() {
+      const completions = getCompletions();
+      const custom = getCustomTasks();
+      const combined = [...custom, ...initialMasterTasks];
+
+      const seen = new Set();
+      const list = [];
+      for (const t of combined) {
+        if (!seen.has(t.id)) {
+          seen.add(t.id);
+          const c = completions[t.id];
+          list.push({
+            ...t,
+            done: c ? c.done : false,
+            completedAt: c ? c.completedAt : null
+          });
+        }
+      }
+      return list;
     }
 
     function toggleTask(id) {
+      const completions = getCompletions();
+      const currentlyDone = completions[id] ? completions[id].done : false;
+      const willBeDone = !currentlyDone;
+
       const now = new Date();
       const monthDay = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       const timeStr = monthDay + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
-      const tasks = getTasks().map(t => {
-        if (t.id === id) {
-          const willBeDone = !t.done;
-          return {
-            ...t,
-            done: willBeDone,
-            completedAt: willBeDone ? (t.completedAt || timeStr) : null
-          };
-        }
-        return t;
-      });
-      saveTasks(tasks);
+      if (willBeDone) {
+        completions[id] = { done: true, completedAt: timeStr };
+      } else {
+        delete completions[id];
+      }
+      saveCompletions(completions);
+      render();
     }
 
     function switchView(view) {
@@ -630,8 +655,8 @@
       const inp = document.getElementById('quickInp');
       const val = inp.value.trim();
       if (!val) return;
-      const tasks = getTasks();
-      tasks.unshift({
+      const custom = getCustomTasks();
+      custom.unshift({
         id: 'cust_' + Date.now(),
         text: val,
         tag: 'Quick Note',
@@ -639,12 +664,13 @@
         date: 'Active',
         done: false
       });
+      saveCustomTasks(custom);
       inp.value = '';
-      saveTasks(tasks);
+      render();
     }
 
     function render() {
-      const tasks = getTasks();
+      const tasks = getAllTasks();
       const container = document.getElementById('mainTaskContainer');
       container.innerHTML = '';
 
@@ -658,14 +684,12 @@
       document.getElementById('sTotal').innerText = tasks.length;
 
       if (currentView === 'active') {
-        // Show ONLY unticked tasks!
         if (activeTasks.length === 0) {
           container.innerHTML = '<div class="empty-box">🎉 All tasks are completed! Everything is moved to the Done tab.</div>';
           return;
         }
         activeTasks.forEach(t => container.appendChild(createTaskCard(t)));
       } else if (currentView === 'done') {
-        // Show ONLY completed tasks!
         if (doneTasks.length === 0) {
           container.innerHTML = '<div class="empty-box">No completed tasks yet. Tap any task in To-Do to mark it done.</div>';
           return;
@@ -676,7 +700,6 @@
         container.appendChild(hdr);
         doneTasks.forEach(t => container.appendChild(createTaskCard(t)));
       } else if (currentView === 'cal') {
-        // Group by scheduled day
         const days = ['Active', 'Tue Nov 3', 'Wed Nov 4', 'Thu Nov 5', 'Fri Nov 6'];
         days.forEach(d => {
           const group = tasks.filter(t => t.date === d);
