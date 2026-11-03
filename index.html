@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wayne's Weekly Schedule & First Principles Hub</title>
+  <title>Wayne's Tasks & Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -61,7 +61,6 @@
     .app-title {
       font-size: 19px;
       font-weight: 800;
-      letter-spacing: -0.2px;
       color: #fff;
       display: flex;
       align-items: center;
@@ -79,46 +78,51 @@
     }
 
     /* Navigation Tabs */
-    .tab-bar-wrap {
+    .tab-bar {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 6px;
       margin-bottom: 14px;
-      gap: 6px;
-    }
-    .filter-tabs {
-      display: flex;
-      gap: 6px;
       overflow-x: auto;
       scrollbar-width: none;
+      padding-bottom: 2px;
     }
-    .filter-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .t-btn {
       background: var(--card);
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: 6px 12px;
+      padding: 7px 14px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       transition: all .15s ease;
     }
-    .tab-btn.active {
+    .t-btn.active {
       background: #2563eb;
       color: #fff;
       border-color: #2563eb;
     }
-    .tab-btn.fp-btn {
+    .t-btn.fp-btn {
       background: rgba(168, 85, 247, 0.15);
       color: #c084fc;
       border-color: rgba(168, 85, 247, 0.35);
     }
-    .tab-btn.fp-btn.active {
+    .t-btn.fp-btn.active {
       background: #9333ea;
       color: #fff;
       border-color: #9333ea;
+    }
+    .badge-count {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      font-weight: 700;
     }
 
     /* Counter Bar */
@@ -149,82 +153,45 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Day Cards */
-    .day-card {
+    /* Task Item Card */
+    .task-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 14px;
-      overflow: hidden;
-    }
-    .day-hdr {
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .day-label {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #fff;
-    }
-    .d-pill {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .p-done { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
-    .p-today { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.35); }
-    .p-off { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
-    .p-visit { background: var(--purple-dim); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
-
-    /* Task Item */
-    .task-group {
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .task-item {
-      background: var(--card-inner);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      padding: 11px 12px;
+      border-radius: 10px;
+      padding: 12px 14px;
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      min-height: 48px;
+      margin-bottom: 8px;
       cursor: pointer;
       transition: all .15s ease;
     }
-    .task-item:active {
-      background: rgba(255, 255, 255, 0.05);
+    .task-card:active {
       transform: scale(0.99);
+      background: rgba(255, 255, 255, 0.03);
     }
-    .task-item.completed {
-      opacity: 0.45;
+    .task-card.is-done {
+      opacity: 0.55;
+      background: rgba(16, 185, 129, 0.04);
+      border-color: rgba(16, 185, 129, 0.2);
     }
-    .task-item.completed .t-text {
+    .task-card.is-done .t-text {
       text-decoration: line-through;
       color: var(--muted);
     }
     .chk {
       width: 22px;
       height: 22px;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 2px solid #64748b;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-top: 1px;
+      margin-top: 2px;
       transition: all .15s ease;
     }
-    .task-item.completed .chk {
+    .task-card.is-done .chk {
       background: #10b981;
       border-color: #10b981;
     }
@@ -235,7 +202,7 @@
       font-weight: 800;
       display: none;
     }
-    .task-item.completed .chk::after { display: block; }
+    .task-card.is-done .chk::after { display: block; }
     .t-main { flex: 1; }
     .t-text {
       font-size: 13.5px;
@@ -252,15 +219,43 @@
     }
     .tag {
       font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-weight: 600;
     }
     .tag-w { background: var(--accent-dim); color: var(--accent); }
     .tag-p { background: var(--rose-dim); color: #fb7185; }
     .tag-rd { background: var(--purple-dim); color: #c084fc; }
     .tag-hold { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .tag-rollover { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 700; }
+    .tag-date { background: rgba(255, 255, 255, 0.05); color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+    /* Empty state */
+    .empty-box {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    /* Calendar Day Grouping */
+    .cal-day {
+      margin-bottom: 18px;
+    }
+    .cal-hdr {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 4px 2px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 8px;
+    }
 
     /* Sticky Bottom Bar */
     .bottom-bar {
@@ -403,224 +398,50 @@
   <div class="app-wrap">
     <header>
       <div class="app-title">
-        <span>🎯 Wayne's Schedule</span>
+        <span>🎯 Wayne's Tasks</span>
       </div>
       <div class="week-chip">NOV 2 – 8</div>
     </header>
 
-    <!-- Navigation Tabs -->
-    <div class="tab-bar-wrap">
-      <div class="filter-tabs">
-        <button class="tab-btn active" id="btnAll" onclick="setFilter('all', this)">All</button>
-        <button class="tab-btn" id="btnToday" onclick="setFilter('today', this)">Today (Nov 3)</button>
-        <button class="tab-btn" id="btnWork" onclick="setFilter('work', this)">Work</button>
-        <button class="tab-btn" id="btnPers" onclick="setFilter('personal', this)">Personal</button>
-        <button class="tab-btn fp-btn" id="btnFP" onclick="showFirstPrinciples(this)">🧠 First Principles</button>
+    <!-- Top View Tabs -->
+    <div class="tab-bar">
+      <button class="t-btn active" id="tabActive" onclick="switchView('active')">
+        <span>📋 To-Do (未完成)</span>
+        <span class="badge-count" id="badgeActive">0</span>
+      </button>
+      <button class="t-btn" id="tabDone" onclick="switchView('done')">
+        <span>✅ Done (已完成)</span>
+        <span class="badge-count" id="badgeDone">0</span>
+      </button>
+      <button class="t-btn" id="tabCal" onclick="switchView('cal')">
+        <span>📅 Calendar (日程)</span>
+      </button>
+      <button class="t-btn fp-btn" id="tabFP" onclick="switchView('fp')">
+        <span>🧠 First Principles</span>
+      </button>
+    </div>
+
+    <!-- Counters -->
+    <div class="count-bar" id="statBar">
+      <div class="c-box">
+        <div class="c-label">Remaining</div>
+        <div class="c-num" id="sRemaining" style="color:#fbbf24">0</div>
+      </div>
+      <div class="c-box">
+        <div class="c-label">Finished</div>
+        <div class="c-num" id="sFinished" style="color:#10b981">0</div>
+      </div>
+      <div class="c-box">
+        <div class="c-label">Total</div>
+        <div class="c-num" id="sTotal">0</div>
       </div>
     </div>
 
-    <!-- ============================================= -->
-    <!-- 1. TO-DO LIST VIEW (Default)                  -->
-    <!-- ============================================= -->
-    <div id="todoMainSection">
-      <div class="count-bar">
-        <div class="c-box">
-          <div class="c-label">Total</div>
-          <div class="c-num" id="cTotal">11</div>
-        </div>
-        <div class="c-box">
-          <div class="c-label">Done</div>
-          <div class="c-num" id="cDone" style="color:#10b981">1</div>
-        </div>
-        <div class="c-box">
-          <div class="c-label">Pending</div>
-          <div class="c-num" id="cPending" style="color:#fbbf24">10</div>
-        </div>
-      </div>
-
-      <!-- Tuesday Nov 3 (ACTIVE TODAY / INCLUDES ROLLED OVER ITEMS) -->
-      <div class="day-card" data-day="today">
-        <div class="day-hdr" style="background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.3)">
-          <div class="day-label" style="color:#38bdf8">Tuesday, Nov 3</div>
-          <span class="d-pill p-today">ACTIVE TODAY</span>
-        </div>
-        <div class="task-group">
-          <!-- Rolled Over from Nov 2 -->
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_movt')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🔒 <b>Japanese Movement Comparison:</b> Compare attached prices vs our price list from 3 suppliers <i>(Confidential)</i></div>
-              <div class="t-meta">
-                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
-                <span class="tag tag-rd">Confidential</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_icewatch')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text"><b>Ice Watch:</b> Finish design today <i>(Pending Betty's Bezel)</i></div>
-              <div class="t-meta">
-                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
-                <span class="tag tag-hold">Awaiting Bezel</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_anita')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Help Anita: Ask replenishment & new products from OB report</div>
-              <div class="t-meta">
-                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
-                <span class="tag tag-w">Work</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_lovable')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Build Elite Factory System at Lovable</div>
-              <div class="t-meta">
-                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
-                <span class="tag tag-w">Work</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Original Tuesday Nov 3 Tasks -->
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_first_principle')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🧠 <b>Boss Ted Mandate:</b> Review Elon Musk First Principles & finalize AxiomAgent blueprint</div>
-              <div class="t-meta"><span class="tag tag-rd">Executive Priority</span><span class="tag tag-w">AxiomAgent</span></div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="personal" onclick="toggleTask(this, 't_cake')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🎂 <b>Get birthday cake</b></div>
-              <div class="t-meta"><span class="tag tag-p">Personal</span></div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_mis')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🤖 <b>Management Information System (MIS):</b> Prompt AI to draft horology & jewellery system architecture</div>
-              <div class="t-meta"><span class="tag tag-rd">AI Task</span><span class="tag tag-w">Sector MIS</span></div>
-            </div>
-          </div>
-
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_disney')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Betty Design: Disney concepts & Ice Watch review</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Monday Nov 2 (ARCHIVE / COMPLETED ONLY) -->
-      <div class="day-card" data-day="past" style="opacity:0.85">
-        <div class="day-hdr">
-          <div class="day-label">Monday, Nov 2</div>
-          <span class="d-pill p-done">COMPLETED / ROLLED OVER</span>
-        </div>
-        <div class="task-group">
-          <div class="task-item completed" data-type="work" onclick="toggleTask(this, 'm1')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">R&D-to-Production: Sample order data intake & review</div>
-              <div class="t-meta"><span class="tag tag-rd">R&D Sprint</span></div>
-            </div>
-          </div>
-          <div style="font-size:11.5px;color:#f59e0b;padding:6px 12px;background:rgba(245,158,11,0.06);border-radius:6px;border:1px dashed rgba(245,158,11,0.25)">
-            ↩ 4 uncompleted tasks rolled over into Tuesday, Nov 3 above.
-          </div>
-        </div>
-      </div>
-
-      <!-- Wednesday Nov 4 -->
-      <div class="day-card" data-day="future">
-        <div class="day-hdr">
-          <div class="day-label">Wednesday, Nov 4</div>
-          <span class="d-pill p-off">🌴 DAY OFF</span>
-        </div>
-        <div class="task-group">
-          <div class="task-item" data-type="personal" onclick="toggleTask(this, 'w1')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🏖️ <b>Off on Wednesday</b> (Personal rest / Day off)</div>
-              <div class="t-meta"><span class="tag tag-p">Personal</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Thursday Nov 5 -->
-      <div class="day-card" data-day="future">
-        <div class="day-hdr">
-          <div class="day-label">Thursday, Nov 5</div>
-          <span class="d-pill p-visit">🏭 PH FACTORY</span>
-        </div>
-        <div class="task-group">
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'th1')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🏭 <b>Go to PH Factory</b> (Production & engineering review)</div>
-              <div class="t-meta"><span class="tag tag-w">Factory Visit</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Friday Nov 6 -->
-      <div class="day-card" data-day="future">
-        <div class="day-hdr">
-          <div class="day-label">Friday, Nov 6</div>
-          <span class="d-pill p-norm">WRAP-UP</span>
-        </div>
-        <div class="task-group">
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'f_lateship')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">📦 <b>Late Shipment Audit System:</b> Kick off / start analysis (factory delay vs client hold)</div>
-              <div class="t-meta"><span class="tag tag-w">Late Shipment Audit</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'f1')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Follow up on PH Factory action items & R&D conversion progress</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'f2')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Review Ice Watch & Disney final designs with Betty</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Extra Notes Card -->
-      <div class="day-card" id="extraCard" style="display:none">
-        <div class="day-hdr">
-          <div class="day-label">Quick Notes & Extra Tasks</div>
-        </div>
-        <div class="task-group" id="extraTasks"></div>
-      </div>
-    </div>
+    <!-- Container for Active / Done / Calendar Views -->
+    <div id="mainTaskContainer"></div>
 
     <!-- ============================================= -->
-    <!-- 2. FIRST PRINCIPLES MOBILE GUIDE              -->
+    <!-- FIRST PRINCIPLES MOBILE GUIDE                 -->
     <!-- ============================================= -->
     <div id="fpGuideSection">
       <div class="guide-hero">
@@ -649,33 +470,31 @@
 
       <div class="guide-card">
         <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:10px">2. Real-World Examples</div>
-        <div class="example-grid">
-          <div class="ex-card">
-            <div class="ex-title">🚀 Example A: SpaceX Rocket Cost</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.4">
-              <b>Analogy Thinking:</b> Aerospace contractors sell a rocket for <b>$60M</b> because "rockets have always been expensive."<br>
-              <b>First Principle Thinking:</b> What is a rocket made of? Aerospace-grade aluminum, titanium, copper, carbon fiber. What is the spot market price of those materials?<br>
-              👉 <b>Raw material cost is only ~$1.2M (2% of the total price!)</b><br>
-              Musk realized the other 98% is process waste. SpaceX built their own factory and created reusable rockets.
-            </div>
+        <div class="ex-card">
+          <div class="ex-title">🚀 Example A: SpaceX Rocket Cost</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">
+            <b>Analogy Thinking:</b> Aerospace contractors sell a rocket for <b>$60M</b> because "rockets have always been expensive."<br>
+            <b>First Principle Thinking:</b> What is a rocket made of? Aerospace-grade aluminum, titanium, copper, carbon fiber.<br>
+            👉 <b>Raw material cost is only ~$1.2M (2% of the price!)</b><br>
+            Musk realized the other 98% is process waste. SpaceX built their own factory and created reusable rockets.
           </div>
+        </div>
 
-          <div class="ex-card">
-            <div class="ex-title">⌚ Example B: Watch & Jewellery Manufacturing (Oro Time)</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.4">
-              <b>Analogy Thinking:</b> "Suppliers quote $45 for this stainless steel case because that's the market quote."<br>
-              <b>First Principle Thinking:</b> What is the raw 316L steel weight? ~85 grams = $0.35 raw steel. CNC machining time = 4.2 minutes = $1.80 power & machine depreciation. Hand polish = 3 minutes = $0.90 labor.<br>
-              👉 The fundamental physical floor is under $6. Everything above that is supplier markup or inefficient tooling!
-            </div>
+        <div class="ex-card">
+          <div class="ex-title">⌚ Example B: Watch & Jewellery Manufacturing (Oro Time)</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">
+            <b>Analogy Thinking:</b> "Suppliers quote $45 for this stainless steel case because that's the market quote."<br>
+            <b>First Principle Thinking:</b> What is the raw 316L steel weight? ~85g = $0.35 steel. CNC time = 4.2 min = $1.80 power/depreciation. Polish = 3 min = $0.90 labor.<br>
+            👉 The physical cost floor is under $6. Everything above that is supplier markup or inefficient tooling!
           </div>
+        </div>
 
-          <div class="ex-card">
-            <div class="ex-title">🏢 Example C: Management Approval Chains</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.4">
-              <b>Analogy Thinking:</b> "A purchase order needs 7 managers' signatures because that's our company policy."<br>
-              <b>First Principle Thinking:</b> What is the true goal of an approval? <i>To prevent financial theft/error.</i> Does having 7 busy people blindly rubber-stamp reduce error? No, it dilutes accountability to zero.<br>
-              👉 <b>First Principle Solution:</b> Automate limits in ERP. Under $5,000 = 1 click auto-approved; Over $5,000 = 1 single responsible owner signs.
-            </div>
+        <div class="ex-card">
+          <div class="ex-title">🏢 Example C: Management Approval Chains</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">
+            <b>Analogy Thinking:</b> "A purchase order needs 7 managers' signatures because that's our company policy."<br>
+            <b>First Principle Thinking:</b> What is the true goal? <i>To prevent financial theft/error.</i> Having 7 busy people rubber-stamp dilutes accountability to zero.<br>
+            👉 <b>Solution:</b> Automate limits in ERP. Under $5,000 = 1 click auto-approved; Over $5,000 = 1 single responsible owner signs.
           </div>
         </div>
       </div>
@@ -713,139 +532,172 @@
       </div>
 
       <div style="text-align:center;margin-top:14px">
-        <button class="tab-btn" style="background:#2563eb;color:#fff;border:none;padding:8px 18px" onclick="backToTasks()">← Back to My Schedule</button>
+        <button class="t-btn" style="background:#2563eb;color:#fff;border:none;padding:8px 18px;margin:0 auto" onclick="switchView('active')">← Back to My To-Do</button>
       </div>
     </div>
   </div>
 
   <!-- Bottom Quick Add Form -->
   <div class="bottom-bar" id="quickAddBar">
-    <form class="add-row" onsubmit="addExtra(event)">
-      <input type="text" id="quickInp" class="add-inp" placeholder="Type a task or note..." required>
+    <form class="add-row" onsubmit="handleQuickAdd(event)">
+      <input type="text" id="quickInp" class="add-inp" placeholder="Type a new task..." required>
       <button type="submit" class="add-btn">+ Add</button>
     </form>
   </div>
 
   <script>
-    function loadState() {
-      // Use v4 storage key to clear previous stale mobile cache
-      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo_v4') || '{}');
-      for (const [k, v] of Object.entries(state)) {
-        const item = document.querySelector(`[onclick*="${k}"]`);
-        if (item) {
-          if (v) item.classList.add('completed');
-          else item.classList.remove('completed');
+    // Master Task List: All uncompleted tasks stay in Active!
+    // Completed tasks move to Done tab.
+    const initialMasterTasks = [
+      { id: 't_rd', text: 'R&D-to-Production: Sample order data intake & review', tag: 'R&D Sprint', type: 'rd', date: 'Active', done: false },
+      { id: 't_movt', text: '🔒 Japanese Movement Comparison: Compare attached prices vs our price list from 3 suppliers (Confidential)', tag: 'Confidential', type: 'rd', date: 'Active', done: false },
+      { id: 't_icewatch', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', date: 'Active', done: false },
+      { id: 't_anita', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', date: 'Active', done: false },
+      { id: 't_lovable', text: 'Build Elite Factory System at Lovable', tag: 'Work', type: 'w', date: 'Active', done: false },
+      { id: 't_ted', text: '🧠 Boss Ted Mandate: Review Elon Musk First Principles & finalize AxiomAgent blueprint', tag: 'Executive Priority', type: 'rd', date: 'Active', done: false },
+      { id: 't_cake', text: '🎂 Get birthday cake', tag: 'Personal', type: 'p', date: 'Tue Nov 3', done: false },
+      { id: 't_mis', text: '🤖 Management Information System (MIS): Prompt AI to draft horology & jewellery architecture', tag: 'AI Task', type: 'w', date: 'Tue Nov 3', done: false },
+      { id: 't_disney', text: 'Betty Design: Disney concepts & Ice Watch review', tag: 'Work', type: 'w', date: 'Tue Nov 3', done: false },
+      { id: 't_off', text: '🏖️ Off on Wednesday (Day Off / Personal Time)', tag: 'Personal', type: 'p', date: 'Wed Nov 4', done: false },
+      { id: 't_ph', text: '🏭 Go to PH Factory (Production & engineering review)', tag: 'Factory Visit', type: 'w', date: 'Thu Nov 5', done: false },
+      { id: 't_lateship', text: '📦 Late Shipment Audit System: Kick off / start analysis (factory delay vs client hold)', tag: 'Late Ship Audit', type: 'w', date: 'Fri Nov 6', done: false },
+      { id: 't_ph_follow', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', date: 'Fri Nov 6', done: false },
+      { id: 't_betty_review', text: 'Review Ice Watch & Disney final designs with Betty', tag: 'Work', type: 'w', date: 'Fri Nov 6', done: false }
+    ];
+
+    let currentView = 'active';
+
+    function getTasks() {
+      const stored = localStorage.getItem('wayne_tasks_v5');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('wayne_tasks_v5', JSON.stringify(initialMasterTasks));
+      return initialMasterTasks;
+    }
+
+    function saveTasks(tasks) {
+      localStorage.setItem('wayne_tasks_v5', JSON.stringify(tasks));
+      render();
+    }
+
+    function toggleTask(id) {
+      const tasks = getTasks().map(t => {
+        if (t.id === id) {
+          return { ...t, done: !t.done };
         }
+        return t;
+      });
+      saveTasks(tasks);
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
+
+      if (view === 'active') document.getElementById('tabActive').classList.add('active');
+      if (view === 'done') document.getElementById('tabDone').classList.add('active');
+      if (view === 'cal') document.getElementById('tabCal').classList.add('active');
+      if (view === 'fp') document.getElementById('tabFP').classList.add('active');
+
+      if (view === 'fp') {
+        document.getElementById('statBar').style.display = 'none';
+        document.getElementById('mainTaskContainer').style.display = 'none';
+        document.getElementById('quickAddBar').style.display = 'none';
+        document.getElementById('fpGuideSection').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.getElementById('statBar').style.display = 'grid';
+        document.getElementById('mainTaskContainer').style.display = 'block';
+        document.getElementById('quickAddBar').style.display = 'block';
+        document.getElementById('fpGuideSection').style.display = 'none';
+        render();
       }
-      renderExtras();
-      updateCounts();
     }
 
-    function toggleTask(el, key) {
-      el.classList.toggle('completed');
-      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo_v4') || '{}');
-      state[key] = el.classList.contains('completed');
-      localStorage.setItem('wayne_mobile_todo_v4', JSON.stringify(state));
-      updateCounts();
-    }
-
-    function updateCounts() {
-      const all = document.querySelectorAll('#todoMainSection .task-item').length;
-      const done = document.querySelectorAll('#todoMainSection .task-item.completed').length;
-      document.getElementById('cTotal').innerText = all;
-      document.getElementById('cDone').innerText = done;
-      document.getElementById('cPending').innerText = Math.max(0, all - done);
-    }
-
-    function setFilter(type, btn) {
-      document.getElementById('fpGuideSection').style.display = 'none';
-      document.getElementById('todoMainSection').style.display = 'block';
-      document.getElementById('quickAddBar').style.display = 'block';
-
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      document.querySelectorAll('.day-card').forEach(card => {
-        if (card.id === 'extraCard') return;
-        if (type === 'today') {
-          card.style.display = card.dataset.day === 'today' ? 'block' : 'none';
-        } else {
-          card.style.display = 'block';
-        }
-      });
-
-      document.querySelectorAll('.task-item').forEach(item => {
-        if (type === 'work') {
-          item.style.display = item.dataset.type === 'work' ? 'flex' : 'none';
-        } else if (type === 'personal') {
-          item.style.display = item.dataset.type === 'personal' ? 'flex' : 'none';
-        } else {
-          item.style.display = 'flex';
-        }
-      });
-    }
-
-    function showFirstPrinciples(btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('todoMainSection').style.display = 'none';
-      document.getElementById('quickAddBar').style.display = 'none';
-      document.getElementById('fpGuideSection').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function backToTasks() {
-      const btn = document.getElementById('btnAll');
-      setFilter('all', btn);
-    }
-
-    function addExtra(e) {
+    function handleQuickAdd(e) {
       e.preventDefault();
       const inp = document.getElementById('quickInp');
-      const text = inp.value.trim();
-      if (!text) return;
-      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
-      extras.push({ id: Date.now().toString(), text: text, done: false });
-      localStorage.setItem('wayne_mobile_extras', JSON.stringify(extras));
-      inp.value = '';
-      renderExtras();
-      updateCounts();
-    }
-
-    function toggleExtra(id) {
-      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
-      const updated = extras.map(x => x.id === id ? { ...x, done: !x.done } : x);
-      localStorage.setItem('wayne_mobile_extras', JSON.stringify(updated));
-      renderExtras();
-      updateCounts();
-    }
-
-    function renderExtras() {
-      const extras = JSON.parse(localStorage.getItem('wayne_mobile_extras') || '[]');
-      const card = document.getElementById('extraCard');
-      const group = document.getElementById('extraTasks');
-      if (extras.length === 0) {
-        card.style.display = 'none';
-        return;
-      }
-      card.style.display = 'block';
-      group.innerHTML = '';
-      extras.forEach(x => {
-        const d = document.createElement('div');
-        d.className = 'task-item' + (x.done ? ' completed' : '');
-        d.setAttribute('onclick', `toggleExtra('${x.id}')`);
-        d.innerHTML = `
-          <div class="chk"></div>
-          <div class="t-main">
-            <div class="t-text">${x.text}</div>
-            <div class="t-meta"><span class="tag tag-w">Note</span></div>
-          </div>
-        `;
-        group.appendChild(d);
+      const val = inp.value.trim();
+      if (!val) return;
+      const tasks = getTasks();
+      tasks.unshift({
+        id: 'cust_' + Date.now(),
+        text: val,
+        tag: 'Quick Note',
+        type: 'w',
+        date: 'Active',
+        done: false
       });
+      inp.value = '';
+      saveTasks(tasks);
     }
 
-    loadState();
+    function render() {
+      const tasks = getTasks();
+      const container = document.getElementById('mainTaskContainer');
+      container.innerHTML = '';
+
+      const activeTasks = tasks.filter(t => !t.done);
+      const doneTasks = tasks.filter(t => t.done);
+
+      document.getElementById('badgeActive').innerText = activeTasks.length;
+      document.getElementById('badgeDone').innerText = doneTasks.length;
+      document.getElementById('sRemaining').innerText = activeTasks.length;
+      document.getElementById('sFinished').innerText = doneTasks.length;
+      document.getElementById('sTotal').innerText = tasks.length;
+
+      if (currentView === 'active') {
+        // Show ONLY unticked tasks!
+        if (activeTasks.length === 0) {
+          container.innerHTML = '<div class="empty-box">🎉 All tasks are completed! Everything is moved to the Done tab.</div>';
+          return;
+        }
+        activeTasks.forEach(t => container.appendChild(createTaskCard(t)));
+      } else if (currentView === 'done') {
+        // Show ONLY completed tasks!
+        if (doneTasks.length === 0) {
+          container.innerHTML = '<div class="empty-box">No completed tasks yet. Tap any task in To-Do to mark it done.</div>';
+          return;
+        }
+        doneTasks.forEach(t => container.appendChild(createTaskCard(t)));
+      } else if (currentView === 'cal') {
+        // Group by scheduled day
+        const days = ['Active', 'Tue Nov 3', 'Wed Nov 4', 'Thu Nov 5', 'Fri Nov 6'];
+        days.forEach(d => {
+          const group = tasks.filter(t => t.date === d);
+          if (group.length === 0) return;
+          const wrap = document.createElement('div');
+          wrap.className = 'cal-day';
+          wrap.innerHTML = `<div class="cal-hdr"><span>${d === 'Active' ? '🔥 Ongoing / Immediate' : d}</span><span>${group.length} items</span></div>`;
+          group.forEach(t => wrap.appendChild(createTaskCard(t)));
+          container.appendChild(wrap);
+        });
+      }
+    }
+
+    function createTaskCard(t) {
+      const div = document.createElement('div');
+      div.className = 'task-card' + (t.done ? ' is-done' : '');
+      div.onclick = () => toggleTask(t.id);
+
+      let tagClass = 'tag-w';
+      if (t.type === 'p') tagClass = 'tag-p';
+      if (t.type === 'rd') tagClass = 'tag-rd';
+      if (t.type === 'hold') tagClass = 'tag-hold';
+
+      div.innerHTML = `
+        <div class="chk"></div>
+        <div class="t-main">
+          <div class="t-text">${t.text}</div>
+          <div class="t-meta">
+            <span class="tag ${tagClass}">${t.tag}</span>
+            <span class="tag tag-date">${t.date}</span>
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    render();
   </script>
 </body>
 </html>
