@@ -580,9 +580,18 @@
     }
 
     function toggleTask(id) {
+      const now = new Date();
+      const monthDay = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const timeStr = monthDay + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
       const tasks = getTasks().map(t => {
         if (t.id === id) {
-          return { ...t, done: !t.done };
+          const willBeDone = !t.done;
+          return {
+            ...t,
+            done: willBeDone,
+            completedAt: willBeDone ? (t.completedAt || timeStr) : null
+          };
         }
         return t;
       });
@@ -658,6 +667,10 @@
           container.innerHTML = '<div class="empty-box">No completed tasks yet. Tap any task in To-Do to mark it done.</div>';
           return;
         }
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'font-size:11.5px;color:#34d399;font-weight:700;margin-bottom:10px;padding:6px 12px;background:rgba(16,185,129,0.08);border-radius:6px;border:1px solid rgba(16,185,129,0.25)';
+        hdr.innerText = `✅ Completed History (${doneTasks.length} items logged with completion time)`;
+        container.appendChild(hdr);
         doneTasks.forEach(t => container.appendChild(createTaskCard(t)));
       } else if (currentView === 'cal') {
         // Group by scheduled day
@@ -684,13 +697,19 @@
       if (t.type === 'rd') tagClass = 'tag-rd';
       if (t.type === 'hold') tagClass = 'tag-hold';
 
+      let metaDetails = `<span class="tag ${tagClass}">${t.tag}</span>`;
+      if (t.done && t.completedAt) {
+        metaDetails += `<span class="tag" style="background:rgba(16,185,129,0.18);color:#34d399;font-weight:700;">✓ Done: ${t.completedAt}</span>`;
+      } else {
+        metaDetails += `<span class="tag tag-date">${t.date}</span>`;
+      }
+
       div.innerHTML = `
         <div class="chk"></div>
         <div class="t-main">
           <div class="t-text">${t.text}</div>
           <div class="t-meta">
-            <span class="tag ${tagClass}">${t.tag}</span>
-            <span class="tag tag-date">${t.date}</span>
+            ${metaDetails}
           </div>
         </div>
       `;
