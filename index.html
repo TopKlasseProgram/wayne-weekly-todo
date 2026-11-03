@@ -549,6 +549,8 @@
     // Master Task List: All uncompleted tasks stay in Active!
     // Completed tasks move to Done tab.
     const initialMasterTasks = [
+      { id: 't_lb_delivery', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', date: 'Active', done: false },
+      { id: 't_betty_disney', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', date: 'Active', done: false },
       { id: 't_ph_ob', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', date: 'Active', done: false },
       { id: 't_rd', text: 'R&D-to-Production: Sample order data intake & review', tag: 'R&D Sprint', type: 'rd', date: 'Active', done: false },
       { id: 't_movt', text: '🔒 Japanese Movement Comparison: Compare attached prices vs our price list from 3 suppliers (Confidential)', tag: 'Confidential', type: 'rd', date: 'Active', done: false },
@@ -569,14 +571,14 @@
     let currentView = 'active';
 
     function getTasks() {
-      const stored = localStorage.getItem('wayne_tasks_v6');
+      const stored = localStorage.getItem('wayne_tasks_v7');
       if (stored) return JSON.parse(stored);
-      localStorage.setItem('wayne_tasks_v6', JSON.stringify(initialMasterTasks));
+      localStorage.setItem('wayne_tasks_v7', JSON.stringify(initialMasterTasks));
       return initialMasterTasks;
     }
 
     function saveTasks(tasks) {
-      localStorage.setItem('wayne_tasks_v6', JSON.stringify(tasks));
+      localStorage.setItem('wayne_tasks_v7', JSON.stringify(tasks));
       render();
     }
 
