@@ -49,7 +49,7 @@
       margin: 0 auto;
     }
 
-    /* Top App Header */
+    /* Top Header */
     header {
       display: flex;
       align-items: center;
@@ -78,7 +78,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Nav / Filter Tabs */
+    /* Navigation Tabs */
     .tab-bar-wrap {
       display: flex;
       justify-content: space-between;
@@ -177,8 +177,8 @@
       border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
     }
-    .p-today { background: var(--green-dim); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
-    .p-norm { background: rgba(255, 255, 255, 0.04); color: var(--muted); border: 1px solid var(--border); }
+    .p-done { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .p-today { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.35); }
     .p-off { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
     .p-visit { background: var(--purple-dim); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
 
@@ -260,6 +260,7 @@
     .tag-p { background: var(--rose-dim); color: #fb7185; }
     .tag-rd { background: var(--purple-dim); color: #c084fc; }
     .tag-hold { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-rollover { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 700; }
 
     /* Sticky Bottom Bar */
     .bottom-bar {
@@ -300,12 +301,8 @@
       cursor: pointer;
     }
 
-    /* ========================================= */
-    /* FIRST PRINCIPLES MOBILE GUIDE STYLES      */
-    /* ========================================= */
-    #fpGuideSection {
-      display: none;
-    }
+    /* Guide Section */
+    #fpGuideSection { display: none; }
     .guide-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -343,40 +340,6 @@
       color: #cbd5e1;
       line-height: 1.5;
     }
-
-    .callout-box {
-      background: var(--card-inner);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 10px 12px;
-      margin: 10px 0;
-      font-size: 13px;
-    }
-    .callout-box.purple { border-left-color: #c084fc; background: rgba(168,85,247,0.08); }
-    .callout-box.green { border-left-color: #34d399; background: rgba(16,185,129,0.08); }
-    .callout-box.amber { border-left-color: #fbbf24; background: rgba(245,158,11,0.08); }
-
-    .example-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .ex-card {
-      background: var(--card-inner);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-    }
-    .ex-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
     .ex-compare {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -398,7 +361,19 @@
       padding: 8px;
       color: #86efac;
     }
-
+    .ex-card {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+    .ex-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
     .pipeline-step {
       display: flex;
       gap: 12px;
@@ -419,27 +394,8 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-    .p-body h4 {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-    .p-body p {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .why-chain {
-      background: var(--card-inner);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 12px;
-      margin-top: 8px;
-      line-height: 1.6;
-    }
-    .why-chain b { color: #38bdf8; }
+    .p-body h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .p-body p { font-size: 12px; color: var(--muted); line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -456,12 +412,11 @@
     <div class="tab-bar-wrap">
       <div class="filter-tabs">
         <button class="tab-btn active" id="btnAll" onclick="setFilter('all', this)">All</button>
-        <button class="tab-btn" id="btnToday" onclick="setFilter('today', this)">Today</button>
+        <button class="tab-btn" id="btnToday" onclick="setFilter('today', this)">Today (Nov 3)</button>
         <button class="tab-btn" id="btnWork" onclick="setFilter('work', this)">Work</button>
         <button class="tab-btn" id="btnPers" onclick="setFilter('personal', this)">Personal</button>
         <button class="tab-btn fp-btn" id="btnFP" onclick="showFirstPrinciples(this)">🧠 First Principles</button>
       </div>
-      <button class="tab-btn" style="background:rgba(245,158,11,0.15);color:#fbbf24;border-color:rgba(245,158,11,0.3);font-size:11px;padding:6px 10px;" onclick="rolloverUnticked()">🔄 Rollover</button>
     </div>
 
     <!-- ============================================= -->
@@ -483,11 +438,98 @@
         </div>
       </div>
 
-      <!-- Monday Nov 2 -->
+      <!-- Tuesday Nov 3 (ACTIVE TODAY / INCLUDES ROLLED OVER ITEMS) -->
       <div class="day-card" data-day="today">
+        <div class="day-hdr" style="background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.3)">
+          <div class="day-label" style="color:#38bdf8">Tuesday, Nov 3</div>
+          <span class="d-pill p-today">ACTIVE TODAY</span>
+        </div>
+        <div class="task-group">
+          <!-- Rolled Over from Nov 2 -->
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_movt')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">🔒 <b>Japanese Movement Comparison:</b> Compare attached prices vs our price list from 3 suppliers <i>(Confidential)</i></div>
+              <div class="t-meta">
+                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
+                <span class="tag tag-rd">Confidential</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_icewatch')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text"><b>Ice Watch:</b> Finish design today <i>(Pending Betty's Bezel)</i></div>
+              <div class="t-meta">
+                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
+                <span class="tag tag-hold">Awaiting Bezel</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_anita')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">Help Anita: Ask replenishment & new products from OB report</div>
+              <div class="t-meta">
+                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
+                <span class="tag tag-w">Work</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_lovable')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">Build Elite Factory System at Lovable</div>
+              <div class="t-meta">
+                <span class="tag tag-rollover">↩ Rolled Over from Nov 2</span>
+                <span class="tag tag-w">Work</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Original Tuesday Nov 3 Tasks -->
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_first_principle')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">🧠 <b>Boss Ted Mandate:</b> Review Elon Musk First Principles & finalize AxiomAgent blueprint</div>
+              <div class="t-meta"><span class="tag tag-rd">Executive Priority</span><span class="tag tag-w">AxiomAgent</span></div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="personal" onclick="toggleTask(this, 't_cake')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">🎂 <b>Get birthday cake</b></div>
+              <div class="t-meta"><span class="tag tag-p">Personal</span></div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_mis')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">🤖 <b>Management Information System (MIS):</b> Prompt AI to draft horology & jewellery system architecture</div>
+              <div class="t-meta"><span class="tag tag-rd">AI Task</span><span class="tag tag-w">Sector MIS</span></div>
+            </div>
+          </div>
+
+          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_disney')">
+            <div class="chk"></div>
+            <div class="t-main">
+              <div class="t-text">Betty Design: Disney concepts & Ice Watch review</div>
+              <div class="t-meta"><span class="tag tag-w">Work</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monday Nov 2 (ARCHIVE / COMPLETED ONLY) -->
+      <div class="day-card" data-day="past" style="opacity:0.85">
         <div class="day-hdr">
           <div class="day-label">Monday, Nov 2</div>
-          <span class="d-pill p-today">TODAY</span>
+          <span class="d-pill p-done">COMPLETED / ROLLED OVER</span>
         </div>
         <div class="task-group">
           <div class="task-item completed" data-type="work" onclick="toggleTask(this, 'm1')">
@@ -497,78 +539,8 @@
               <div class="t-meta"><span class="tag tag-rd">R&D Sprint</span></div>
             </div>
           </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'm_movt')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🔒 <b>Japanese Movement Comparison:</b> Compare attached prices vs our price list from 3 suppliers <i>(Confidential)</i></div>
-              <div class="t-meta"><span class="tag tag-rd">Confidential Test</span><span class="tag tag-w">Miyota / Seiko / Epson</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'm2')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text"><b>Ice Watch:</b> Finish design today <i>(Pending Betty's Bezel)</i></div>
-              <div class="t-meta"><span class="tag tag-hold">Awaiting Bezel</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'm3')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Help Anita: Ask replenishment & new products from OB report</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 'm4')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Kick off / Scope Elite Factory System on Lovable</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tuesday Nov 3 -->
-      <div class="day-card" data-day="future">
-        <div class="day-hdr">
-          <div class="day-label">Tuesday, Nov 3</div>
-          <span class="d-pill p-norm">TOMORROW</span>
-        </div>
-        <div class="task-group">
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_first_principle')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🧠 <b>Boss Ted Mandate:</b> Review Elon Musk First Principles & finalize AxiomAgent blueprint</div>
-              <div class="t-meta"><span class="tag tag-rd">Executive Priority</span><span class="tag tag-w">AxiomAgent</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="personal" onclick="toggleTask(this, 't1')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🎂 <b>Get birthday cake</b></div>
-              <div class="t-meta"><span class="tag tag-p">Personal</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't_mis')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">🤖 <b>Management Information System (MIS):</b> Prompt AI to draft horology & jewellery system architecture</div>
-              <div class="t-meta"><span class="tag tag-rd">AI Task</span><span class="tag tag-w">Sector MIS</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't2')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Build Elite Factory System at Lovable</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
-          </div>
-          <div class="task-item" data-type="work" onclick="toggleTask(this, 't3')">
-            <div class="chk"></div>
-            <div class="t-main">
-              <div class="t-text">Betty Design: Disney concepts & Ice Watch review</div>
-              <div class="t-meta"><span class="tag tag-w">Work</span></div>
-            </div>
+          <div style="font-size:11.5px;color:#f59e0b;padding:6px 12px;background:rgba(245,158,11,0.06);border-radius:6px;border:1px dashed rgba(245,158,11,0.25)">
+            ↩ 4 uncompleted tasks rolled over into Tuesday, Nov 3 above.
           </div>
         </div>
       </div>
@@ -638,7 +610,7 @@
         </div>
       </div>
 
-      <!-- Quick Add Extra Notes -->
+      <!-- Extra Notes Card -->
       <div class="day-card" id="extraCard" style="display:none">
         <div class="day-hdr">
           <div class="day-label">Quick Notes & Extra Tasks</div>
@@ -648,11 +620,9 @@
     </div>
 
     <!-- ============================================= -->
-    <!-- 2. FIRST PRINCIPLES MOBILE GUIDE (Visual/Clean)-->
+    <!-- 2. FIRST PRINCIPLES MOBILE GUIDE              -->
     <!-- ============================================= -->
     <div id="fpGuideSection">
-      
-      <!-- Header Hero Card -->
       <div class="guide-hero">
         <span class="g-badge">Boss Ted Briefing</span>
         <h2>What is First Principles Thinking?<br><span style="color:#c084fc;font-size:16px">(第一性原理思維)</span></h2>
@@ -661,7 +631,6 @@
         </p>
       </div>
 
-      <!-- 1. The Core Difference (Analogy vs First Principles) -->
       <div class="guide-card">
         <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:8px">1. Analogy vs. First Principles</div>
         <div class="ex-compare">
@@ -678,12 +647,9 @@
         </div>
       </div>
 
-      <!-- 2. The 3 Classic Examples -->
       <div class="guide-card">
         <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:10px">2. Real-World Examples</div>
-        
         <div class="example-grid">
-          <!-- Rocket Example -->
           <div class="ex-card">
             <div class="ex-title">🚀 Example A: SpaceX Rocket Cost</div>
             <div style="font-size:12px;color:var(--muted);line-height:1.4">
@@ -694,17 +660,15 @@
             </div>
           </div>
 
-          <!-- Watch / Factory Example -->
           <div class="ex-card">
             <div class="ex-title">⌚ Example B: Watch & Jewellery Manufacturing (Oro Time)</div>
             <div style="font-size:12px;color:var(--muted);line-height:1.4">
               <b>Analogy Thinking:</b> "Suppliers quote $45 for this stainless steel case because that's the market quote."<br>
-              <b>First Principle Thinking:</b> What is the raw 316L steel weight? ~85 grams = $0.35 raw steel. CNC machining time = 4.2 minutes = $1.80 power & amortized machine depreciation. Hand polish = 3 minutes = $0.90 labor.<br>
+              <b>First Principle Thinking:</b> What is the raw 316L steel weight? ~85 grams = $0.35 raw steel. CNC machining time = 4.2 minutes = $1.80 power & machine depreciation. Hand polish = 3 minutes = $0.90 labor.<br>
               👉 The fundamental physical floor is under $6. Everything above that is supplier markup or inefficient tooling!
             </div>
           </div>
 
-          <!-- Management Example -->
           <div class="ex-card">
             <div class="ex-title">🏢 Example C: Management Approval Chains</div>
             <div style="font-size:12px;color:var(--muted);line-height:1.4">
@@ -716,31 +680,8 @@
         </div>
       </div>
 
-      <!-- 3. The 5-Whys Root Cause Formula -->
       <div class="guide-card">
-        <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:6px">3. The Practical Tool: 5-Whys Root Cause</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-          Whenever a problem occurs in the factory or office, never blame "human carelessness." Ask 5 consecutive "Whys" until you hit the incentive structure:
-        </div>
-
-        <div class="why-chain">
-          <b>Problem:</b> Factory shipment was 3 weeks late.<br>
-          ↳ <b>Why 1?</b> Dials arrived late from the supplier.<br>
-          ↳ <b>Why 2?</b> Dial color sample was rejected twice.<br>
-          ↳ <b>Why 3?</b> Merchandiser communicated color via phone photo instead of Pantone/spectrometer code.<br>
-          ↳ <b>Why 4?</b> There is no digital spec sheet pipeline between sales and factory PMC.<br>
-          ↳ <b>Why 5 (First Principle Fact)?</b> The company evaluated merchandisers on "speed of response" rather than "first-time spec accuracy."<br>
-          🎯 <b>Action:</b> Fix the incentive and introduce automated digital spec verification.
-        </div>
-      </div>
-
-      <!-- 4. AxiomAgent Architecture Blueprint -->
-      <div class="guide-card">
-        <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:12px">4. The `AxiomAgent` AI Blueprint</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
-          How to build this into an AI Agent for Wayne and Boss Ted:
-        </div>
-
+        <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:12px">3. The `AxiomAgent` AI Blueprint</div>
         <div class="pipeline-step">
           <div class="p-circle">1</div>
           <div class="p-body">
@@ -748,47 +689,32 @@
             <p>Receives human problem, strips all "industry habits," and extracts core physical facts & data.</p>
           </div>
         </div>
-
         <div class="pipeline-step">
           <div class="p-circle">2</div>
           <div class="p-body">
             <h4>Deductive Engine (演繹推理模組)</h4>
-            <p>Applies base laws: Thermodynamics/Entropy (preventing chaos), Game Theory (Nash equilibrium in departments), and Economics.</p>
+            <p>Applies base laws: Thermodynamics/Entropy, Game Theory, and Economics.</p>
           </div>
         </div>
-
         <div class="pipeline-step">
           <div class="p-circle">3</div>
           <div class="p-body">
             <h4>Dual-Track Action (雙軌決策引擎)</h4>
-            <p><b>Track A (Strategy):</b> 5-Year Reverse Engineering from physical optimal state.<br><b>Track B (Operations):</b> 5-Whys Root Cause Solver.</p>
+            <p><b>Track A:</b> 5-Year Reverse Engineering.<br><b>Track B:</b> 5-Whys Root Cause Solver.</p>
           </div>
         </div>
-
         <div class="pipeline-step">
           <div class="p-circle">4</div>
           <div class="p-body">
             <h4>Validator & OKRs (驗證落地模組)</h4>
-            <p>Runs counterfactual stress-testing ("What is the worst failure mode?") and outputs clear OKRs/tasks.</p>
+            <p>Runs counterfactual stress-testing and outputs clear OKRs/tasks.</p>
           </div>
         </div>
-      </div>
-
-      <!-- Summary for Ted -->
-      <div class="guide-card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.04)">
-        <div style="font-weight:800;color:#34d399;font-size:13.5px;margin-bottom:6px">💡 30-Second Summary for Boss Ted</div>
-        <ul style="padding-left:18px;font-size:12px;color:#cbd5e1;line-height:1.6">
-          <li><b>First Principles</b> means rejecting "how others do it" and breaking every cost, delay, and process down to raw physics & unit economics.</li>
-          <li>In <b>Strategy</b>, it prevents copying rivals and cuts 80%+ of product cost by looking at raw materials (SpaceX model).</li>
-          <li>In <b>Management</b>, it eliminates 7-step approval bureaucracy and aligns conflicting departmental KPIs using 5-Whys.</li>
-          <li><b>AxiomAgent</b> is our proposed AI system that automatically applies this 4-step deduction to Oro Time factory, sales, and supply chain decisions.</li>
-        </ul>
       </div>
 
       <div style="text-align:center;margin-top:14px">
         <button class="tab-btn" style="background:#2563eb;color:#fff;border:none;padding:8px 18px" onclick="backToTasks()">← Back to My Schedule</button>
       </div>
-
     </div>
   </div>
 
@@ -802,7 +728,8 @@
 
   <script>
     function loadState() {
-      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo') || '{}');
+      // Use v4 storage key to clear previous stale mobile cache
+      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo_v4') || '{}');
       for (const [k, v] of Object.entries(state)) {
         const item = document.querySelector(`[onclick*="${k}"]`);
         if (item) {
@@ -816,9 +743,9 @@
 
     function toggleTask(el, key) {
       el.classList.toggle('completed');
-      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo') || '{}');
+      const state = JSON.parse(localStorage.getItem('wayne_mobile_todo_v4') || '{}');
       state[key] = el.classList.contains('completed');
-      localStorage.setItem('wayne_mobile_todo', JSON.stringify(state));
+      localStorage.setItem('wayne_mobile_todo_v4', JSON.stringify(state));
       updateCounts();
     }
 
@@ -831,7 +758,6 @@
     }
 
     function setFilter(type, btn) {
-      // Hide FP Guide, Show Todo Section
       document.getElementById('fpGuideSection').style.display = 'none';
       document.getElementById('todoMainSection').style.display = 'block';
       document.getElementById('quickAddBar').style.display = 'block';
@@ -871,31 +797,6 @@
     function backToTasks() {
       const btn = document.getElementById('btnAll');
       setFilter('all', btn);
-    }
-
-    function rolloverUnticked() {
-      const todayRows = document.querySelectorAll('.day-card[data-day="today"] .task-item:not(.completed)');
-      if (todayRows.length === 0) {
-        alert("Great job! All of today's tasks are already ticked.");
-        return;
-      }
-      const tomorrowGroup = document.querySelectorAll('.day-card[data-day="future"] .task-group')[0];
-      if (!tomorrowGroup) return;
-
-      let moved = 0;
-      todayRows.forEach(row => {
-        const meta = row.querySelector('.t-meta');
-        if (meta && !meta.innerHTML.includes('Rolled Over')) {
-          const badge = document.createElement('span');
-          badge.className = 'tag tag-hold';
-          badge.innerText = 'Rolled Over';
-          meta.appendChild(badge);
-        }
-        tomorrowGroup.appendChild(row);
-        moved++;
-      });
-      updateCounts();
-      alert("Moved " + moved + " unticked task(s) to Tomorrow!");
     }
 
     function addExtra(e) {
