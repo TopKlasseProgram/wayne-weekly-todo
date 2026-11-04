@@ -423,6 +423,10 @@
       <button class="t-btn" id="tabToday" onclick="switchView('today')">
         <span>🔥 Today (Nov 4)</span>
       </button>
+      <button class="t-btn" id="tabPaul" onclick="switchView('paul')">
+        <span>⏳ Pending Paul</span>
+        <span class="badge-count" id="badgePaul" style="background:rgba(245,158,11,0.25);color:#fbbf24">4</span>
+      </button>
       <button class="t-btn" id="tabDone" onclick="switchView('done')">
         <span>✅ Done (已完成)</span>
         <span class="badge-count" id="badgeDone">0</span>
@@ -450,6 +454,29 @@
 
     <!-- Container for Tasks -->
     <div id="mainTaskContainer"></div>
+
+    <!-- ============================================= -->
+    <!-- PENDING FROM PAUL (LB FACTORY) TAB            -->
+    <!-- ============================================= -->
+    <div id="paulSection" style="display:none">
+      <div class="guide-hero" style="background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(56,189,248,0.1));border-color:rgba(245,158,11,0.35);margin-bottom:14px">
+        <span class="g-badge" style="background:rgba(245,158,11,0.25);color:#fbbf24">LB Factory Follow-up</span>
+        <h2 style="font-size:17px">Pending Answers from Paul<br><span style="color:#fbbf24;font-size:13.5px">(Long Bright Factory Inquiries)</span></h2>
+        <p style="font-size:12px;margin-top:4px">
+          Operational questions awaiting confirmation from Paul. Tap to tick off as answers are received.
+        </p>
+      </div>
+
+      <div class="task-group" id="paulList"></div>
+
+      <div style="margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">+ Add Follow-up Question for Paul</div>
+        <form class="add-row" onsubmit="addPaulQuestion(event)">
+          <input type="text" id="paulInp" class="add-inp" placeholder="Type question for Paul..." required>
+          <button type="submit" class="add-btn" style="background:#f59e0b;color:#0b0f19">+ Add</button>
+        </form>
+      </div>
+    </div>
 
     <!-- FIRST PRINCIPLES MOBILE GUIDE -->
     <div id="fpGuideSection">
@@ -720,20 +747,31 @@
 
       if (view === 'active') document.getElementById('tabActive').classList.add('active');
       if (view === 'today') document.getElementById('tabToday').classList.add('active');
+      if (view === 'paul') document.getElementById('tabPaul').classList.add('active');
       if (view === 'done') document.getElementById('tabDone').classList.add('active');
       if (view === 'fp') document.getElementById('tabFP').classList.add('active');
 
       if (view === 'fp') {
         document.getElementById('statBar').style.display = 'none';
         document.getElementById('mainTaskContainer').style.display = 'none';
+        document.getElementById('paulSection').style.display = 'none';
         document.getElementById('quickAddBar').style.display = 'none';
         document.getElementById('fpGuideSection').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (view === 'paul') {
+        document.getElementById('statBar').style.display = 'none';
+        document.getElementById('mainTaskContainer').style.display = 'none';
+        document.getElementById('fpGuideSection').style.display = 'none';
+        document.getElementById('quickAddBar').style.display = 'none';
+        document.getElementById('paulSection').style.display = 'block';
+        renderPaul();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         document.getElementById('statBar').style.display = 'grid';
         document.getElementById('mainTaskContainer').style.display = 'block';
         document.getElementById('quickAddBar').style.display = 'block';
         document.getElementById('fpGuideSection').style.display = 'none';
+        document.getElementById('paulSection').style.display = 'none';
         render();
       }
     }
@@ -759,6 +797,98 @@
       render();
     }
 
+    
+    // Paul LB Factory Questions Master Data & State
+    const defaultPaulQuestions = [
+      { id: 'p_q1', num: '1', title: 'Component Descriptions', text: 'How to get all the descriptions for components purchased?', sub: 'Purchasing BOM & component taxonomy master' },
+      { id: 'p_q2', num: '2', title: 'Aug & Sept Sales Figures', text: 'August and September sales breakdown & confirmation', sub: 'LB factory billing & monthly sales reconciliation' },
+      { id: 'p_q3', num: '3', title: 'Missing Order Revenue', text: 'Where to see missing order revenue in the system?', sub: 'Unaccounted sales orders & revenue audit' },
+      { id: 'p_q4', num: '4', title: 'Sample Development Records', text: 'Any records on samples and prototype developments?', sub: 'R&D sample logs & proto dispatch tracking' }
+    ];
+
+    function getPaulQuestions() {
+      const stored = localStorage.getItem('wayne_paul_questions');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('wayne_paul_questions', JSON.stringify(defaultPaulQuestions));
+      return defaultPaulQuestions;
+    }
+
+    function savePaulQuestions(list) {
+      localStorage.setItem('wayne_paul_questions', JSON.stringify(list));
+      renderPaul();
+    }
+
+    function getPaulAnswers() {
+      return JSON.parse(localStorage.getItem('wayne_paul_answers') || '{}');
+    }
+
+    function togglePaulItem(id) {
+      const answers = getPaulAnswers();
+      const now = new Date();
+      const timeStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+      if (answers[id]) {
+        delete answers[id];
+      } else {
+        answers[id] = { answered: true, time: timeStr };
+      }
+      localStorage.setItem('wayne_paul_answers', JSON.stringify(answers));
+      renderPaul();
+    }
+
+    function addPaulQuestion(e) {
+      e.preventDefault();
+      const inp = document.getElementById('paulInp');
+      const val = inp.value.trim();
+      if (!val) return;
+      const list = getPaulQuestions();
+      list.push({
+        id: 'p_q_' + Date.now(),
+        num: (list.length + 1).toString(),
+        title: 'Follow-up Question',
+        text: val,
+        sub: 'Added on ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      });
+      inp.value = '';
+      savePaulQuestions(list);
+    }
+
+    function renderPaul() {
+      const list = getPaulQuestions();
+      const answers = getPaulAnswers();
+      const container = document.getElementById('paulList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let answeredCount = 0;
+      list.forEach(q => {
+        const isAnswered = !!answers[q.id];
+        if (isAnswered) answeredCount++;
+
+        const card = document.createElement('div');
+        card.className = 'task-card' + (isAnswered ? ' is-done' : '');
+        card.onclick = () => togglePaulItem(q.id);
+
+        card.innerHTML = `
+          <div class="chk"></div>
+          <div class="t-main">
+            <div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;margin-bottom:2px">Question #${q.num}: ${q.title}</div>
+            <div class="t-text" style="font-size:14px;font-weight:600">${q.text}</div>
+            <div class="t-meta">
+              <span class="tag" style="background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)">Paul (LB Factory)</span>
+              ${isAnswered ? `<span class="tag" style="background:rgba(16,185,129,0.18);color:#34d399;font-weight:700">✓ Answered: ${answers[q.id].time}</span>` : `<span class="tag" style="background:rgba(244,63,94,0.12);color:#fb7185">Awaiting Reply</span>`}
+              <span style="font-size:10.5px;color:var(--muted)">${q.sub}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const pendingCount = list.length - answeredCount;
+      const badge = document.getElementById('badgePaul');
+      if (badge) badge.innerText = pendingCount;
+    }
+
     function render() {
       const tasks = getAllTasks();
       const container = document.getElementById('mainTaskContainer');
@@ -772,6 +902,13 @@
       document.getElementById('sRemaining').innerText = activeTasks.length;
       document.getElementById('sFinished').innerText = doneTasks.length;
       document.getElementById('sTotal').innerText = tasks.length;
+      if (typeof renderPaul === 'function') {
+        const pList = getPaulQuestions();
+        const pAns = getPaulAnswers();
+        const pPend = pList.filter(q => !pAns[q.id]).length;
+        const bPaul = document.getElementById('badgePaul');
+        if (bPaul) bPaul.innerText = pPend;
+      }
 
       if (currentView === 'active') {
         if (activeTasks.length === 0) {
