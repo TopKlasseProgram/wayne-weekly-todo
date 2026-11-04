@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wayne's Tasks & Schedule</title>
+  <title>Wayne's Dated Weekly Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -91,7 +91,7 @@
       background: var(--card);
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: 7px 14px;
+      padding: 7px 13px;
       border-radius: 20px;
       font-size: 12.5px;
       font-weight: 600;
@@ -152,6 +152,40 @@
       margin-top: 2px;
       font-family: 'JetBrains Mono', monospace;
     }
+
+    /* Date Section Header */
+    .date-section {
+      margin-bottom: 18px;
+    }
+    .date-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .date-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .date-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .p-today { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.35); }
+    .p-tomorrow { background: var(--purple-dim); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
+    .p-friday { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .p-saturday { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
 
     /* Task Item Card */
     .task-card {
@@ -227,9 +261,8 @@
     .tag-p { background: var(--rose-dim); color: #fb7185; }
     .tag-rd { background: var(--purple-dim); color: #c084fc; }
     .tag-hold { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .tag-date { background: rgba(255, 255, 255, 0.05); color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .tag-date { background: rgba(255, 255, 255, 0.08); color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.12); }
 
-    /* Empty state */
     .empty-box {
       text-align: center;
       padding: 36px 16px;
@@ -238,23 +271,6 @@
       border: 1px dashed var(--border);
       border-radius: 12px;
       font-size: 13px;
-    }
-
-    /* Calendar Day Grouping */
-    .cal-day {
-      margin-bottom: 18px;
-    }
-    .cal-hdr {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      padding: 4px 2px 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      margin-bottom: 8px;
     }
 
     /* Sticky Bottom Bar */
@@ -363,12 +379,7 @@
       padding: 12px;
       margin-top: 8px;
     }
-    .ex-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
+    .ex-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; }
     .pipeline-step {
       display: flex;
       gap: 12px;
@@ -398,23 +409,23 @@
   <div class="app-wrap">
     <header>
       <div class="app-title">
-        <span>🎯 Wayne's Tasks</span>
+        <span>🎯 Wayne's Schedule</span>
       </div>
-      <div class="week-chip">NOV 2 – 8</div>
+      <div class="week-chip">NOV 4 – 8</div>
     </header>
 
     <!-- Top View Tabs -->
     <div class="tab-bar">
       <button class="t-btn active" id="tabActive" onclick="switchView('active')">
-        <span>📋 To-Do (未完成)</span>
+        <span>📋 To-Do (By Date)</span>
         <span class="badge-count" id="badgeActive">0</span>
+      </button>
+      <button class="t-btn" id="tabToday" onclick="switchView('today')">
+        <span>🔥 Today (Nov 4)</span>
       </button>
       <button class="t-btn" id="tabDone" onclick="switchView('done')">
         <span>✅ Done (已完成)</span>
         <span class="badge-count" id="badgeDone">0</span>
-      </button>
-      <button class="t-btn" id="tabCal" onclick="switchView('cal')">
-        <span>📅 Calendar (日程)</span>
       </button>
       <button class="t-btn fp-btn" id="tabFP" onclick="switchView('fp')">
         <span>🧠 First Principles</span>
@@ -437,18 +448,16 @@
       </div>
     </div>
 
-    <!-- Container for Active / Done / Calendar Views -->
+    <!-- Container for Tasks -->
     <div id="mainTaskContainer"></div>
 
-    <!-- ============================================= -->
-    <!-- FIRST PRINCIPLES MOBILE GUIDE                 -->
-    <!-- ============================================= -->
+    <!-- FIRST PRINCIPLES MOBILE GUIDE -->
     <div id="fpGuideSection">
       <div class="guide-hero">
         <span class="g-badge">Boss Ted Briefing</span>
         <h2>What is First Principles Thinking?<br><span style="color:#c084fc;font-size:16px">(第一性原理思維)</span></h2>
         <p>
-          Elon Musk's core thinking framework: <b>Never accept things "just because people have always done it that way."</b> Strip any problem down to its fundamental, unalterable truths (physics & raw facts), then rebuild the solution from scratch.
+          Elon Musk's core framework: <b>Never accept things "just because people have always done it that way."</b> Strip any problem down to its fundamental, unalterable truths (physics & raw facts), then rebuild the solution from scratch.
         </p>
       </div>
 
@@ -457,13 +466,11 @@
         <div class="ex-compare">
           <div class="ex-bad">
             <b style="display:block;margin-bottom:4px">❌ 類比思維 (Analogy)</b>
-            "Looking at what competitors do and copying or making 5% tweaks."<br>
-            <i>Result: Slow, incremental, stuck in industry customs.</i>
+            "Looking at what competitors do and copying or making 5% tweaks."
           </div>
           <div class="ex-good">
             <b style="display:block;margin-bottom:4px">🎯 第一性原理 (First Principles)</b>
-            "Ignoring all existing practices. Asking: What are the base physical components & costs?"<br>
-            <i>Result: 10x cost reduction & game-changing innovation.</i>
+            "Asking: What are the base physical components & raw facts?"
           </div>
         </div>
       </div>
@@ -473,60 +480,54 @@
         <div class="ex-card">
           <div class="ex-title">🚀 Example A: SpaceX Rocket Cost</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4">
-            <b>Analogy Thinking:</b> Aerospace contractors sell a rocket for <b>$60M</b> because "rockets have always been expensive."<br>
-            <b>First Principle Thinking:</b> What is a rocket made of? Aerospace-grade aluminum, titanium, copper, carbon fiber.<br>
-            👉 <b>Raw material cost is only ~$1.2M (2% of the price!)</b><br>
-            Musk realized the other 98% is process waste. SpaceX built their own factory and created reusable rockets.
+            <b>Analogy:</b> Contractors charge <b>$60M</b>.<br>
+            <b>First Principle:</b> Raw materials (aluminum, titanium, carbon fiber) cost only <b>~$1.2M (2%)</b>! The other 98% was process waste.
           </div>
         </div>
-
         <div class="ex-card">
-          <div class="ex-title">⌚ Example B: Watch & Jewellery Manufacturing (Oro Time)</div>
+          <div class="ex-title">⌚ Example B: Watch Manufacturing (Oro Time)</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4">
-            <b>Analogy Thinking:</b> "Suppliers quote $45 for this stainless steel case because that's the market quote."<br>
-            <b>First Principle Thinking:</b> What is the raw 316L steel weight? ~85g = $0.35 steel. CNC time = 4.2 min = $1.80 power/depreciation. Polish = 3 min = $0.90 labor.<br>
-            👉 The physical cost floor is under $6. Everything above that is supplier markup or inefficient tooling!
+            <b>Analogy:</b> Vendor quotes $45 for steel case.<br>
+            <b>First Principle:</b> Raw 316L steel (~85g) = $0.35 + CNC time (4.2 min) = $1.80 + hand polish = $0.90. Base cost is under $6.
           </div>
         </div>
-
         <div class="ex-card">
-          <div class="ex-title">🏢 Example C: Management Approval Chains</div>
+          <div class="ex-title">🏢 Example C: Bureaucratic Approvals</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4">
-            <b>Analogy Thinking:</b> "A purchase order needs 7 managers' signatures because that's our company policy."<br>
-            <b>First Principle Thinking:</b> What is the true goal? <i>To prevent financial theft/error.</i> Having 7 busy people rubber-stamp dilutes accountability to zero.<br>
-            👉 <b>Solution:</b> Automate limits in ERP. Under $5,000 = 1 click auto-approved; Over $5,000 = 1 single responsible owner signs.
+            <b>Analogy:</b> 7 managers sign every PO.<br>
+            <b>First Principle:</b> Having 7 busy people rubber-stamp dilutes accountability. Automate ERP limits: &lt;$5,000 auto-approved; &gt;$5,000 one owner signs.
           </div>
         </div>
       </div>
 
       <div class="guide-card">
-        <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:12px">3. The `AxiomAgent` AI Blueprint</div>
+        <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:12px">3. The `AxiomAgent` Blueprint</div>
         <div class="pipeline-step">
           <div class="p-circle">1</div>
           <div class="p-body">
             <h4>Deconstructor (拆解模組)</h4>
-            <p>Receives human problem, strips all "industry habits," and extracts core physical facts & data.</p>
+            <p>Strips corporate habits, extracts base physical facts & data.</p>
           </div>
         </div>
         <div class="pipeline-step">
           <div class="p-circle">2</div>
           <div class="p-body">
             <h4>Deductive Engine (演繹推理模組)</h4>
-            <p>Applies base laws: Thermodynamics/Entropy, Game Theory, and Economics.</p>
+            <p>Applies Entropy, Game Theory, and base economics.</p>
           </div>
         </div>
         <div class="pipeline-step">
           <div class="p-circle">3</div>
           <div class="p-body">
             <h4>Dual-Track Action (雙軌決策引擎)</h4>
-            <p><b>Track A:</b> 5-Year Reverse Engineering.<br><b>Track B:</b> 5-Whys Root Cause Solver.</p>
+            <p>Track A: 5-Year Reverse Planning · Track B: 5-Whys Root Cause.</p>
           </div>
         </div>
         <div class="pipeline-step">
           <div class="p-circle">4</div>
           <div class="p-body">
             <h4>Validator & OKRs (驗證落地模組)</h4>
-            <p>Runs counterfactual stress-testing and outputs clear OKRs/tasks.</p>
+            <p>Counterfactual stress testing & concrete OKRs/KPIs.</p>
           </div>
         </div>
       </div>
@@ -546,31 +547,33 @@
   </div>
 
   <script>
-    // Master Task List: All uncompleted tasks stay in Active!
-    // Completed tasks move to Done tab.
-    const initialMasterTasks = [
-      { id: 't_lb_delivery', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', date: 'Active', done: false },
-      { id: 't_betty_disney', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', date: 'Active', done: false },
-      { id: 't_ph_ob', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', date: 'Active', done: false },
-      { id: 't_rd', text: 'R&D-to-Production: Sample order data intake & review', tag: 'R&D Sprint', type: 'rd', date: 'Active', done: false },
-      { id: 't_movt', text: '🔒 Japanese Movement Comparison: Compare attached prices vs our price list from 3 suppliers (Confidential)', tag: 'Confidential', type: 'rd', date: 'Active', done: false },
-      { id: 't_icewatch', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', date: 'Active', done: false },
-      { id: 't_anita', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', date: 'Active', done: false },
-      { id: 't_lovable', text: 'Build Elite Factory System at Lovable', tag: 'Work', type: 'w', date: 'Active', done: false },
-      { id: 't_ted', text: '🧠 Boss Ted Mandate: Review Elon Musk First Principles & finalize AxiomAgent blueprint', tag: 'Executive Priority', type: 'rd', date: 'Active', done: false },
-      { id: 't_cake', text: '🎂 Get birthday cake', tag: 'Personal', type: 'p', date: 'Tue Nov 3', done: false },
-      { id: 't_mis', text: '🤖 Management Information System (MIS): Prompt AI to draft horology & jewellery architecture', tag: 'AI Task', type: 'w', date: 'Tue Nov 3', done: false },
-      { id: 't_disney', text: 'Betty Design: Disney concepts & Ice Watch review', tag: 'Work', type: 'w', date: 'Tue Nov 3', done: false },
-      { id: 't_off', text: '🏖️ Off on Wednesday (Day Off / Personal Time)', tag: 'Personal', type: 'p', date: 'Wed Nov 4', done: false },
-      { id: 't_ph', text: '🏭 Go to PH Factory (Production & engineering review)', tag: 'Factory Visit', type: 'w', date: 'Thu Nov 5', done: false },
-      { id: 't_lateship', text: '📦 Late Shipment Audit System: Kick off / start analysis (factory delay vs client hold)', tag: 'Late Ship Audit', type: 'w', date: 'Fri Nov 6', done: false },
-      { id: 't_ph_follow', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', date: 'Fri Nov 6', done: false },
-      { id: 't_betty_review', text: 'Review Ice Watch & Disney final designs with Betty', tag: 'Work', type: 'w', date: 'Fri Nov 6', done: false }
+    // Master Task List Strictly Structured with Exact Dates
+    const masterSchedule = [
+      // WEDNESDAY, NOV 4 (TODAY)
+      { id: 'w_elite', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: false },
+      { id: 'w_rd', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: false },
+      { id: 'w_movt', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🔒 Japanese Movement Comparison: Compare attached prices vs our price list (Confidential)', tag: 'Confidential', type: 'rd', done: false },
+      { id: 'w_ph_ob', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', done: false },
+      { id: 'w_lb_deliv', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', done: false },
+      { id: 'w_betty_disney', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', done: false },
+      { id: 'w_ice_watch', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', done: false },
+      { id: 'w_anita', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', done: false },
+
+      // THURSDAY, NOV 5 (TOMORROW)
+      { id: 'th_factory', dateKey: 'Thu, Nov 5', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🏭 Go to PH Factory whole day (Production, engineering & PMC review)', tag: 'Factory Visit', type: 'w', done: false },
+
+      // FRIDAY, NOV 6
+      { id: 'fr_mgmt_timeline', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: false },
+      { id: 'fr_late_ship', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
+      { id: 'fr_ph_follow', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: false },
+
+      // SATURDAY, NOV 7
+      { id: 'sa_mis', dateKey: 'Sat, Nov 7', datePill: 'p-saturday', dayStatus: 'SATURDAY', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
+      { id: 'sa_fp_ted', dateKey: 'Sat, Nov 7', datePill: 'p-saturday', dayStatus: 'SATURDAY', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false }
     ];
 
     let currentView = 'active';
 
-    // Bulletproof Persistent Completion State
     function getCompletions() {
       return JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
     }
@@ -590,7 +593,7 @@
     function getAllTasks() {
       const completions = getCompletions();
       const custom = getCustomTasks();
-      const combined = [...custom, ...initialMasterTasks];
+      const combined = [...custom, ...masterSchedule];
 
       const seen = new Set();
       const list = [];
@@ -631,8 +634,8 @@
       document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
 
       if (view === 'active') document.getElementById('tabActive').classList.add('active');
+      if (view === 'today') document.getElementById('tabToday').classList.add('active');
       if (view === 'done') document.getElementById('tabDone').classList.add('active');
-      if (view === 'cal') document.getElementById('tabCal').classList.add('active');
       if (view === 'fp') document.getElementById('tabFP').classList.add('active');
 
       if (view === 'fp') {
@@ -658,10 +661,12 @@
       const custom = getCustomTasks();
       custom.unshift({
         id: 'cust_' + Date.now(),
+        dateKey: 'Wed, Nov 4',
+        datePill: 'p-today',
+        dayStatus: 'TODAY',
         text: val,
         tag: 'Quick Note',
         type: 'w',
-        date: 'Active',
         done: false
       });
       saveCustomTasks(custom);
@@ -688,7 +693,14 @@
           container.innerHTML = '<div class="empty-box">🎉 All tasks are completed! Everything is moved to the Done tab.</div>';
           return;
         }
-        activeTasks.forEach(t => container.appendChild(createTaskCard(t)));
+        renderGroupedByDate(activeTasks, container);
+      } else if (currentView === 'today') {
+        const todayTasks = activeTasks.filter(t => t.dateKey === 'Wed, Nov 4');
+        if (todayTasks.length === 0) {
+          container.innerHTML = '<div class="empty-box">🎉 All of today\'s tasks (Wed, Nov 4) are completed!</div>';
+          return;
+        }
+        renderGroupedByDate(todayTasks, container);
       } else if (currentView === 'done') {
         if (doneTasks.length === 0) {
           container.innerHTML = '<div class="empty-box">No completed tasks yet. Tap any task in To-Do to mark it done.</div>';
@@ -699,18 +711,32 @@
         hdr.innerText = `✅ Completed History (${doneTasks.length} items logged with completion time)`;
         container.appendChild(hdr);
         doneTasks.forEach(t => container.appendChild(createTaskCard(t)));
-      } else if (currentView === 'cal') {
-        const days = ['Active', 'Tue Nov 3', 'Wed Nov 4', 'Thu Nov 5', 'Fri Nov 6'];
-        days.forEach(d => {
-          const group = tasks.filter(t => t.date === d);
-          if (group.length === 0) return;
-          const wrap = document.createElement('div');
-          wrap.className = 'cal-day';
-          wrap.innerHTML = `<div class="cal-hdr"><span>${d === 'Active' ? '🔥 Ongoing / Immediate' : d}</span><span>${group.length} items</span></div>`;
-          group.forEach(t => wrap.appendChild(createTaskCard(t)));
-          container.appendChild(wrap);
-        });
       }
+    }
+
+    function renderGroupedByDate(taskList, container) {
+      const dateOrder = ['Wed, Nov 4', 'Thu, Nov 5', 'Fri, Nov 6', 'Sat, Nov 7'];
+      dateOrder.forEach(dk => {
+        const group = taskList.filter(t => t.dateKey === dk);
+        if (group.length === 0) return;
+
+        const sec = document.createElement('div');
+        sec.className = 'date-section';
+
+        const sample = group[0];
+        sec.innerHTML = `
+          <div class="date-header">
+            <div class="date-title">
+              <span>📅 ${dk}</span>
+            </div>
+            <span class="date-pill ${sample.datePill}">${sample.dayStatus} (${group.length})</span>
+          </div>
+          <div class="date-tasks"></div>
+        `;
+        const taskBox = sec.querySelector('.date-tasks');
+        group.forEach(t => taskBox.appendChild(createTaskCard(t)));
+        container.appendChild(sec);
+      });
     }
 
     function createTaskCard(t) {
@@ -727,7 +753,7 @@
       if (t.done && t.completedAt) {
         metaDetails += `<span class="tag" style="background:rgba(16,185,129,0.18);color:#34d399;font-weight:700;">✓ Done: ${t.completedAt}</span>`;
       } else {
-        metaDetails += `<span class="tag tag-date">${t.date}</span>`;
+        metaDetails += `<span class="tag tag-date">${t.dateKey}</span>`;
       }
 
       div.innerHTML = `
