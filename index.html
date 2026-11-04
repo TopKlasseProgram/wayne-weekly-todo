@@ -801,20 +801,20 @@
     // Paul LB Factory Questions Master Data & State
     const defaultPaulQuestions = [
       { id: 'p_q1', num: '1', title: 'Component Descriptions', text: 'How to get all the descriptions for components purchased?', sub: 'Purchasing BOM & component taxonomy master' },
-      { id: 'p_q2', num: '2', title: 'Aug & Sept Sales Figures', text: 'August and September sales breakdown & confirmation', sub: 'LB factory billing & monthly sales reconciliation' },
+      { id: 'p_q2', num: '2', title: 'Aug & Sept Vendor Invoices', text: 'August and September invoices from the vendors (actual vendor invoices, not sales figures)', sub: 'Vendor purchasing billing & invoice copies from suppliers' },
       { id: 'p_q3', num: '3', title: 'Missing Order Revenue', text: 'Where to see missing order revenue in the system?', sub: 'Unaccounted sales orders & revenue audit' },
       { id: 'p_q4', num: '4', title: 'Sample Development Records', text: 'Any records on samples and prototype developments?', sub: 'R&D sample logs & proto dispatch tracking' }
     ];
 
     function getPaulQuestions() {
-      const stored = localStorage.getItem('wayne_paul_questions');
+      const stored = localStorage.getItem('wayne_paul_questions_v2');
       if (stored) return JSON.parse(stored);
-      localStorage.setItem('wayne_paul_questions', JSON.stringify(defaultPaulQuestions));
+      localStorage.setItem('wayne_paul_questions_v2', JSON.stringify(defaultPaulQuestions));
       return defaultPaulQuestions;
     }
 
     function savePaulQuestions(list) {
-      localStorage.setItem('wayne_paul_questions', JSON.stringify(list));
+      localStorage.setItem('wayne_paul_questions_v2', JSON.stringify(list));
       renderPaul();
     }
 
