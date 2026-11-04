@@ -574,12 +574,73 @@
 
     let currentView = 'active';
 
+    // Universal Text Fingerprint to survive any future code updates or ID changes
+    function getTaskFingerprint(task) {
+      return (task.text || '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/[^\w\s一-龥]/gi, '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    const legacyAliases = {
+      'w_elite': ['t_lovable', 't2', 'm4', 'task-elite-lovable'],
+      'w_rd': ['t_rd', 'm1', 'day-1', 'task-rd-day1'],
+      'w_movt': ['t_movt', 'm_movt', 'task-movt-compare'],
+      'w_ph_ob': ['t_ph_ob', 'task-fix-ph-ob'],
+      'w_lb_deliv': ['t_lb_delivery', 'task-lb-delivery-fix'],
+      'w_betty_disney': ['t_disney', 't3', 'task-betty-disney-design'],
+      'w_ice_watch': ['t_icewatch', 'm2', 'task-ice-watch-today'],
+      'w_anita': ['t_anita', 'm3', 'task-anita-ob'],
+      'th_factory': ['t_ph', 'th1', 'task-ph-factory'],
+      'fr_mgmt_timeline': ['task-fr-mgmt-timeline'],
+      'fr_late_ship': ['t_lateship', 'f_lateship', 'task-fr-late-ship', 'task-lateship-audit'],
+      'fr_ph_follow': ['t_ph_follow', 'task-ph-followup'],
+      'sa_mis': ['t_mis', 'task-mis-ai'],
+      'sa_fp_ted': ['t_ted', 't_first_principle', 'task-boss-ted-first-principle']
+    };
+
     function getCompletions() {
       return JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
     }
 
     function saveCompletions(map) {
       localStorage.setItem('wayne_task_completions', JSON.stringify(map));
+    }
+
+    function isTaskCompleted(task, completions) {
+      if (completions[task.id] && completions[task.id].done) {
+        return completions[task.id];
+      }
+
+      const aliases = legacyAliases[task.id] || [];
+      for (const alias of aliases) {
+        if (completions[alias] && completions[alias].done) {
+          return completions[alias];
+        }
+      }
+
+      const fp = getTaskFingerprint(task);
+      for (const [key, val] of Object.entries(completions)) {
+        if (val && val.done) {
+          if (val.fingerprint === fp) return val;
+          if (val.text && getTaskFingerprint({ text: val.text }) === fp) return val;
+        }
+      }
+
+      const oldKeys = ['wayne_mobile_todo', 'wayne_mobile_todo_v4', 'wayne_agenda_state'];
+      for (const ok of oldKeys) {
+        try {
+          const oldState = JSON.parse(localStorage.getItem(ok) || '{}');
+          if (oldState[task.id]) return { done: true, completedAt: 'Earlier' };
+          for (const alias of aliases) {
+            if (oldState[alias]) return { done: true, completedAt: 'Earlier' };
+          }
+        } catch(e) {}
+      }
+
+      return null;
     }
 
     function getCustomTasks() {
@@ -600,11 +661,11 @@
       for (const t of combined) {
         if (!seen.has(t.id)) {
           seen.add(t.id);
-          const c = completions[t.id];
+          const compInfo = isTaskCompleted(t, completions);
           list.push({
             ...t,
-            done: c ? c.done : false,
-            completedAt: c ? c.completedAt : null
+            done: !!compInfo,
+            completedAt: compInfo ? compInfo.completedAt : null
           });
         }
       }
@@ -613,18 +674,39 @@
 
     function toggleTask(id) {
       const completions = getCompletions();
-      const currentlyDone = completions[id] ? completions[id].done : false;
-      const willBeDone = !currentlyDone;
+      const allTasks = getAllTasks();
+      const targetTask = allTasks.find(t => t.id === id);
+      if (!targetTask) return;
+
+      const compInfo = isTaskCompleted(targetTask, completions);
+      const willBeDone = !compInfo;
 
       const now = new Date();
       const monthDay = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       const timeStr = monthDay + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
+      const fp = getTaskFingerprint(targetTask);
+      const aliases = legacyAliases[targetTask.id] || [];
+
       if (willBeDone) {
-        completions[id] = { done: true, completedAt: timeStr };
+        const record = {
+          done: true,
+          completedAt: timeStr,
+          text: targetTask.text,
+          fingerprint: fp
+        };
+        completions[targetTask.id] = record;
+        aliases.forEach(a => completions[a] = record);
       } else {
-        delete completions[id];
+        delete completions[targetTask.id];
+        aliases.forEach(a => delete completions[a]);
+        for (const [k, v] of Object.entries(completions)) {
+          if (v && (v.fingerprint === fp || (v.text && getTaskFingerprint({ text: v.text }) === fp))) {
+            delete completions[k];
+          }
+        }
       }
+
       saveCompletions(completions);
       render();
     }
