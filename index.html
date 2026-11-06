@@ -580,8 +580,8 @@
       { id: 'fr_mgmt_timeline', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: false },
       { id: 'fr_late_ship', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
       { id: 'fr_ph_follow', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: false },
-      { id: 'w_elite', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: false },
-      { id: 'fr_elite_func', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ Elite Factory System: Update on Function & Feature Workflows', tag: 'Elite Factory', type: 'w', done: false },
+      { id: 'w_elite', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: true, completedAt: 'Nov 6, 4:40 PM' },
+      { id: 'fr_elite_func', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ Elite Factory System: Update on Function & Feature Workflows', tag: 'Elite Factory', type: 'w', done: true, completedAt: 'Nov 6, 4:40 PM' },
       { id: 'w_rd', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: false },
       { id: 'w_timex_ph_price', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🏷️ Timex Sales Price for PH Factory', tag: 'Timex / PH', type: 'w', done: false },
       { id: 'w_miyota_2034', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🔬 2034 Case Study for Miyota Movement', tag: 'Miyota', type: 'rd', done: false },
@@ -602,7 +602,8 @@
       // NEXT MONDAY, NOV 9
       { id: 'mo_ph_sales', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts', tag: 'PH Factory', type: 'w', done: false },
       { id: 'mo_brew_email', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: false },
-      { id: 'mo_quote_app', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '📱 Customer Quotation App: Build & workflow scoping', tag: 'Quotation App', type: 'w', done: false }
+      { id: 'mo_quote_app', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '📱 Customer Quotation App: Build & workflow scoping', tag: 'Quotation App', type: 'w', done: false },
+      { id: 'mo_elite_remind', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '🔔 Follow up with Elite Factory: Check if content provided to test the system (Waiting for Elite content)', tag: 'Elite Follow-up', type: 'hold', done: false }
     ];
 
     let currentView = 'active';
@@ -635,7 +636,14 @@
     };
 
     function getCompletions() {
-      return JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
+      const stored = JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
+      if (!stored['w_elite']) {
+        stored['w_elite'] = { done: true, completedAt: 'Nov 6, 4:40 PM', text: 'Finish up Elite Factory System at Lovable' };
+        stored['fr_elite_func'] = { done: true, completedAt: 'Nov 6, 4:40 PM', text: 'Elite Factory System: Update on Function & Feature Workflows' };
+        localStorage.setItem('wayne_task_completions', JSON.stringify(stored));
+      }
+      return stored;
+    }');
     }
 
     function saveCompletions(map) {
