@@ -411,7 +411,7 @@
       <div class="app-title">
         <span>🎯 Wayne's Schedule</span>
       </div>
-      <div class="week-chip">NOV 4 – 8</div>
+      <div class="week-chip">FRI, NOV 6</div>
     </header>
 
     <!-- Top View Tabs -->
@@ -421,7 +421,7 @@
         <span class="badge-count" id="badgeActive">0</span>
       </button>
       <button class="t-btn" id="tabToday" onclick="switchView('today')">
-        <span>🔥 Today (Nov 4)</span>
+        <span>🔥 Today (Fri Nov 6)</span>
       </button>
       <button class="t-btn" id="tabPaul" onclick="switchView('paul')">
         <span>⏳ Pending Paul</span>
@@ -576,33 +576,28 @@
   <script>
     // Master Task List Strictly Structured with Exact Dates
     const masterSchedule = [
-      // WEDNESDAY, NOV 4 (TODAY)
-      { id: 'w_timex_ph_price', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🏷️ Timex Sales Price for PH Factory', tag: 'Timex / PH', type: 'w', done: false },
-      { id: 'w_miyota_2034', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🔬 2034 Case Study for Miyota Movement', tag: 'Miyota', type: 'rd', done: false },
-      { id: 'w_elite', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: false },
-      { id: 'w_rd', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: false },
-      { id: 'w_movt', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🔒 Japanese Movement Comparison: Compare attached prices vs our price list (Confidential)', tag: 'Confidential', type: 'rd', done: false },
-      { id: 'w_ph_ob', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', done: false },
-      { id: 'w_lb_deliv', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', done: false },
-      { id: 'w_betty_disney', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', done: false },
-      { id: 'w_ice_watch', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', done: false },
-      { id: 'w_anita', dateKey: 'Wed, Nov 4', datePill: 'p-today', dayStatus: 'TODAY', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', done: false },
+      // FRIDAY, NOV 6 (TODAY)
+      { id: 'fr_mgmt_timeline', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: false },
+      { id: 'fr_late_ship', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
+      { id: 'fr_ph_follow', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: false },
+      { id: 'w_elite', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: false },
+      { id: 'w_rd', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: false },
+      { id: 'w_timex_ph_price', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🏷️ Timex Sales Price for PH Factory', tag: 'Timex / PH', type: 'w', done: false },
+      { id: 'w_miyota_2034', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🔬 2034 Case Study for Miyota Movement', tag: 'Miyota', type: 'rd', done: false },
+      { id: 'w_movt', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🔒 Japanese Movement Price Comparison: Compare attached prices vs our price list (Confidential)', tag: 'Confidential', type: 'rd', done: false },
+      { id: 'w_ph_ob', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', done: false },
+      { id: 'w_lb_deliv', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', done: false },
+      { id: 'w_betty_disney', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', done: false },
+      { id: 'w_ice_watch', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', done: false },
+      { id: 'w_anita', dateKey: 'Fri, Nov 6', datePill: 'p-today', dayStatus: 'TODAY', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', done: false },
 
-      // THURSDAY, NOV 5 (TOMORROW)
-      { id: 'th_factory', dateKey: 'Thu, Nov 5', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🏭 Go to PH Factory whole day (Production, engineering & PMC review)', tag: 'Factory Visit', type: 'w', done: false },
-
-      // FRIDAY, NOV 6
-      { id: 'fr_mgmt_timeline', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: false },
-      { id: 'fr_late_ship', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
-      { id: 'fr_ph_follow', dateKey: 'Fri, Nov 6', datePill: 'p-friday', dayStatus: 'FRIDAY', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: false },
+      // SATURDAY, NOV 7 (TOMORROW)
+      { id: 'sa_mis', dateKey: 'Sat, Nov 7', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
+      { id: 'sa_fp_ted', dateKey: 'Sat, Nov 7', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false },
 
       // NEXT MONDAY, NOV 9
-      { id: 'mo_ph_sales', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'NEXT MON', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts', tag: 'PH Factory', type: 'w', done: false },
-      { id: 'mo_brew_email', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'NEXT MON', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: false },
-
-      // SATURDAY, NOV 7
-      { id: 'sa_mis', dateKey: 'Sat, Nov 7', datePill: 'p-saturday', dayStatus: 'SATURDAY', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
-      { id: 'sa_fp_ted', dateKey: 'Sat, Nov 7', datePill: 'p-saturday', dayStatus: 'SATURDAY', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false }
+      { id: 'mo_ph_sales', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts', tag: 'PH Factory', type: 'w', done: false },
+      { id: 'mo_brew_email', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: false }
     ];
 
     let currentView = 'active';
@@ -920,7 +915,7 @@
         }
         renderGroupedByDate(activeTasks, container);
       } else if (currentView === 'today') {
-        const todayTasks = activeTasks.filter(t => t.dateKey === 'Wed, Nov 4');
+        const todayTasks = activeTasks.filter(t => t.dateKey === 'Fri, Nov 6');
         if (todayTasks.length === 0) {
           container.innerHTML = '<div class="empty-box">🎉 All of today\'s tasks (Wed, Nov 4) are completed!</div>';
           return;
@@ -940,7 +935,7 @@
     }
 
     function renderGroupedByDate(taskList, container) {
-      const dateOrder = ['Wed, Nov 4', 'Thu, Nov 5', 'Fri, Nov 6', 'Sat, Nov 7', 'Mon, Nov 9'];
+      const dateOrder = ['Fri, Nov 6', 'Sat, Nov 7', 'Mon, Nov 9'];
       dateOrder.forEach(dk => {
         const group = taskList.filter(t => t.dateKey === dk);
         if (group.length === 0) return;
