@@ -596,6 +596,9 @@
       { id: 'sa_mis', dateKey: 'Sat, Nov 7', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
       { id: 'sa_fp_ted', dateKey: 'Sat, Nov 7', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false },
 
+      // SUNDAY, NOV 8
+      { id: 'su_design_2034', dateKey: 'Sun, Nov 8', datePill: 'p-tomorrow', dayStatus: 'SUNDAY', text: '🎨 Design Ice Watch & Klasse14 (K14) using 2034 movement', tag: 'Design / K14', type: 'w', done: false },
+
       // NEXT MONDAY, NOV 9
       { id: 'mo_ph_sales', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts', tag: 'PH Factory', type: 'w', done: false },
       { id: 'mo_brew_email', dateKey: 'Mon, Nov 9', datePill: 'p-saturday', dayStatus: 'NEXT MON', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: false }
@@ -936,7 +939,7 @@
     }
 
     function renderGroupedByDate(taskList, container) {
-      const dateOrder = ['Fri, Nov 6', 'Sat, Nov 7', 'Mon, Nov 9'];
+      const dateOrder = ['Fri, Nov 6', 'Sat, Nov 7', 'Sun, Nov 8', 'Mon, Nov 9'];
       dateOrder.forEach(dk => {
         const group = taskList.filter(t => t.dateKey === dk);
         if (group.length === 0) return;
