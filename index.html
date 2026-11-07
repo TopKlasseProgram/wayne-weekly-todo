@@ -709,10 +709,13 @@
         if (!seen.has(t.id)) {
           seen.add(t.id);
           const compInfo = isTaskCompleted(t, completions);
+          const isExplicitlyUnclicked = completions[t.id] && completions[t.id].unclicked === true;
+          const isDone = !isExplicitlyUnclicked && ((t.done === true) || (compInfo && compInfo.done === true));
+          const time = compInfo && compInfo.completedAt ? compInfo.completedAt : (t.completedAt || 'Nov 6, 4:40 PM');
           list.push({
             ...t,
-            done: !!compInfo,
-            completedAt: compInfo ? compInfo.completedAt : null
+            done: isDone,
+            completedAt: isDone ? time : null
           });
         }
       }
@@ -740,18 +743,15 @@
           done: true,
           completedAt: timeStr,
           text: targetTask.text,
-          fingerprint: fp
+          fingerprint: fp,
+          unclicked: false
         };
         completions[targetTask.id] = record;
         aliases.forEach(a => completions[a] = record);
       } else {
-        delete completions[targetTask.id];
-        aliases.forEach(a => delete completions[a]);
-        for (const [k, v] of Object.entries(completions)) {
-          if (v && (v.fingerprint === fp || (v.text && getTaskFingerprint({ text: v.text }) === fp))) {
-            delete completions[k];
-          }
-        }
+        const record = { done: false, unclicked: true };
+        completions[targetTask.id] = record;
+        aliases.forEach(a => completions[a] = record);
       }
 
       saveCompletions(completions);
