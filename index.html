@@ -411,7 +411,10 @@
       <div class="app-title">
         <span>🎯 Wayne's Schedule</span>
       </div>
-      <div class="week-chip">FRI, NOV 6</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="copyTickedTasks()" style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer">📋 Copy Ticked</button>
+        <div class="week-chip">SCHEDULE</div>
+      </div>
     </header>
 
     <!-- Top View Tabs -->
@@ -642,56 +645,26 @@
       'sa_fp_ted': ['t_ted', 't_first_principle', 'task-boss-ted-first-principle']
     };
 
-    function getCompletions() {
-      const stored = JSON.parse(localStorage.getItem('wayne_task_completions') || '{}');
-      if (!stored['w_elite']) {
-        stored['w_elite'] = { done: true, completedAt: 'Nov 6, 4:40 PM', text: 'Finish up Elite Factory System at Lovable' };
-        stored['fr_elite_func'] = { done: true, completedAt: 'Nov 6, 4:40 PM', text: 'Elite Factory System: Update on Function & Feature Workflows' };
-        localStorage.setItem('wayne_task_completions', JSON.stringify(stored));
+    // Rock-solid persistent completion store that NEVER wipes user data
+    function getDoneSet() {
+      try {
+        const arr = JSON.parse(localStorage.getItem('wayne_done_ids_v1') || '[]');
+        return new Set(arr);
+      } catch(e) {
+        return new Set();
       }
-      return stored;
     }
 
-    function saveCompletions(map) {
-      localStorage.setItem('wayne_task_completions', JSON.stringify(map));
-    }
-
-    function isTaskCompleted(task, completions) {
-      if (completions[task.id] && completions[task.id].done) {
-        return completions[task.id];
-      }
-
-      const aliases = legacyAliases[task.id] || [];
-      for (const alias of aliases) {
-        if (completions[alias] && completions[alias].done) {
-          return completions[alias];
-        }
-      }
-
-      const fp = getTaskFingerprint(task);
-      for (const [key, val] of Object.entries(completions)) {
-        if (val && val.done) {
-          if (val.fingerprint === fp) return val;
-          if (val.text && getTaskFingerprint({ text: val.text }) === fp) return val;
-        }
-      }
-
-      const oldKeys = ['wayne_mobile_todo', 'wayne_mobile_todo_v4', 'wayne_agenda_state'];
-      for (const ok of oldKeys) {
-        try {
-          const oldState = JSON.parse(localStorage.getItem(ok) || '{}');
-          if (oldState[task.id]) return { done: true, completedAt: 'Earlier' };
-          for (const alias of aliases) {
-            if (oldState[alias]) return { done: true, completedAt: 'Earlier' };
-          }
-        } catch(e) {}
-      }
-
-      return null;
+    function saveDoneSet(set) {
+      localStorage.setItem('wayne_done_ids_v1', JSON.stringify([...set]));
     }
 
     function getCustomTasks() {
-      return JSON.parse(localStorage.getItem('wayne_custom_tasks') || '[]');
+      try {
+        return JSON.parse(localStorage.getItem('wayne_custom_tasks') || '[]');
+      } catch(e) {
+        return [];
+      }
     }
 
     function saveCustomTasks(tasks) {
@@ -699,7 +672,7 @@
     }
 
     function getAllTasks() {
-      const completions = getCompletions();
+      const doneSet = getDoneSet();
       const custom = getCustomTasks();
       const combined = [...custom, ...masterSchedule];
 
@@ -708,14 +681,12 @@
       for (const t of combined) {
         if (!seen.has(t.id)) {
           seen.add(t.id);
-          const compInfo = isTaskCompleted(t, completions);
-          const isExplicitlyUnclicked = completions[t.id] && completions[t.id].unclicked === true;
-          const isDone = !isExplicitlyUnclicked && ((t.done === true) || (compInfo && compInfo.done === true));
-          const time = compInfo && compInfo.completedAt ? compInfo.completedAt : (t.completedAt || 'Nov 6, 4:40 PM');
+          // A task is done if marked done in master OR ticked in user's doneSet!
+          const isDone = (t.done === true) || doneSet.has(t.id);
           list.push({
             ...t,
             done: isDone,
-            completedAt: isDone ? time : null
+            completedAt: t.completedAt || (isDone ? 'Completed' : null)
           });
         }
       }
@@ -723,39 +694,45 @@
     }
 
     function toggleTask(id) {
-      const completions = getCompletions();
+      const doneSet = getDoneSet();
       const allTasks = getAllTasks();
-      const targetTask = allTasks.find(t => t.id === id);
-      if (!targetTask) return;
+      const target = allTasks.find(t => t.id === id);
+      if (!target) return;
 
-      const compInfo = isTaskCompleted(targetTask, completions);
-      const willBeDone = !compInfo;
-
+      const currentlyDone = (target.done === true) || doneSet.has(id);
       const now = new Date();
-      const monthDay = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const timeStr = monthDay + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      const timeStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
-      const fp = getTaskFingerprint(targetTask);
-      const aliases = legacyAliases[targetTask.id] || [];
-
-      if (willBeDone) {
-        const record = {
-          done: true,
-          completedAt: timeStr,
-          text: targetTask.text,
-          fingerprint: fp,
-          unclicked: false
-        };
-        completions[targetTask.id] = record;
-        aliases.forEach(a => completions[a] = record);
+      if (currentlyDone) {
+        doneSet.delete(id);
+        target.done = false;
+        target.completedAt = null;
       } else {
-        const record = { done: false, unclicked: true };
-        completions[targetTask.id] = record;
-        aliases.forEach(a => completions[a] = record);
+        doneSet.add(id);
+        target.done = true;
+        target.completedAt = timeStr;
       }
-
-      saveCompletions(completions);
+      saveDoneSet(doneSet);
       render();
+    }
+
+    function copyTickedTasks() {
+      const tasks = getAllTasks();
+      const done = tasks.filter(t => t.done).map(t => '• ' + t.text.replace(/<[^>]*>/g, ''));
+      if (done.length === 0) {
+        alert("No tasks currently ticked on your phone. Please tick the completed ones and try again.");
+        return;
+      }
+      const summary = "I have completed:\n" + done.join('\n');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summary).then(() => {
+          alert("✅ Copied to clipboard! Just paste in chat to Christine:\n\n" + summary);
+        }).catch(() => {
+          prompt("Copy your completed tasks and paste in chat:", summary);
+        });
+      } else {
+        prompt("Copy your completed tasks and paste in chat:", summary);
+      }
     }
 
     function switchView(view) {
