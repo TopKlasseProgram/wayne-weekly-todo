@@ -263,6 +263,91 @@
     .tag-hold { background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
     .tag-date { background: rgba(255, 255, 255, 0.08); color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.12); }
 
+    .btn-move {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: #94a3b8;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all .15s ease;
+      flex-shrink: 0;
+    }
+    .btn-move:active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      max-width: 540px;
+      padding: 20px 18px 34px;
+      box-sizing: border-box;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .modal-task-name {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      line-height: 1.35;
+    }
+    .date-opt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .date-opt-btn {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .date-opt-btn:active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-cancel-modal {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: #94a3b8;
+      padding: 11px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     .empty-box {
       text-align: center;
       padding: 36px 16px;
@@ -687,6 +772,49 @@
       localStorage.setItem('wayne_done_ids_v1', JSON.stringify([...set]));
     }
 
+    let taskToMoveId = null;
+
+    function getDateOverrides() {
+      try {
+        return JSON.parse(localStorage.getItem('wayne_date_overrides') || '{}');
+      } catch(e) {
+        return {};
+      }
+    }
+
+    function saveDateOverrides(map) {
+      localStorage.setItem('wayne_date_overrides', JSON.stringify(map));
+    }
+
+    function openMoveModal(taskId) {
+      taskToMoveId = taskId;
+      const tasks = getAllTasks();
+      const target = tasks.find(t => t.id === taskId);
+      if (!target) return;
+      document.getElementById('moveModalTaskName').innerText = target.text.replace(/<[^>]*>/g, '');
+      const modal = document.getElementById('moveModal');
+      modal.style.display = 'flex';
+    }
+
+    function closeMoveModal() {
+      const modal = document.getElementById('moveModal');
+      if (modal) modal.style.display = 'none';
+      taskToMoveId = null;
+    }
+
+    function applyTaskMove(newDateKey, newPill, newStatus) {
+      if (!taskToMoveId) return;
+      const overrides = getDateOverrides();
+      overrides[taskToMoveId] = {
+        dateKey: newDateKey,
+        datePill: newPill,
+        dayStatus: newStatus
+      };
+      saveDateOverrides(overrides);
+      closeMoveModal();
+      render();
+    }
+
     function getCustomTasks() {
       try {
         return JSON.parse(localStorage.getItem('wayne_custom_tasks') || '[]');
@@ -706,13 +834,17 @@
 
       const seen = new Set();
       const list = [];
+      const dateOverrides = getDateOverrides();
       for (const t of combined) {
         if (!seen.has(t.id)) {
           seen.add(t.id);
-          // A task is done if marked done in master OR ticked in user's doneSet!
           const isDone = (t.done === true) || doneSet.has(t.id);
+          const override = dateOverrides[t.id];
           list.push({
             ...t,
+            dateKey: override ? override.dateKey : t.dateKey,
+            datePill: override ? override.datePill : t.datePill,
+            dayStatus: override ? override.dayStatus : t.dayStatus,
             done: isDone,
             completedAt: t.completedAt || (isDone ? 'Completed' : null)
           });
@@ -1008,11 +1140,42 @@
             ${metaDetails}
           </div>
         </div>
+        ${!t.done ? `<button class="btn-move" onclick="event.stopPropagation(); openMoveModal('${t.id}')">📅 Move</button>` : ''}
       `;
       return div;
     }
 
     render();
   </script>
+  <!-- Move Task Bottom Sheet Modal -->
+  <div class="modal-overlay" id="moveModal" onclick="closeMoveModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-title">📅 Move Task to Another Day</div>
+      <div class="modal-task-name" id="moveModalTaskName">...</div>
+      <div class="date-opt-list">
+        <button class="date-opt-btn" onclick="applyTaskMove('Sat, Nov 7', 'p-today', 'TODAY')">
+          <span>🔥 Today (Sat, Nov 7)</span>
+          <span style="font-size:11px;color:#38bdf8">Today</span>
+        </button>
+        <button class="date-opt-btn" onclick="applyTaskMove('Sun, Nov 8', 'p-tomorrow', 'TOMORROW')">
+          <span>☀️ Tomorrow (Sun, Nov 8)</span>
+          <span style="font-size:11px;color:#c084fc">Tomorrow</span>
+        </button>
+        <button class="date-opt-btn" onclick="applyTaskMove('Mon, Nov 9', 'p-saturday', 'NEXT MON')">
+          <span>📅 Next Monday (Nov 9)</span>
+          <span style="font-size:11px;color:#fbbf24">Next Week</span>
+        </button>
+        <button class="date-opt-btn" onclick="applyTaskMove('Tue, Nov 10', 'p-tomorrow', 'NEXT TUE')">
+          <span>📅 Next Tuesday (Nov 10)</span>
+          <span style="font-size:11px;color:#fbbf24">Next Week</span>
+        </button>
+        <button class="date-opt-btn" onclick="applyTaskMove('Wed, Nov 11', 'p-today', 'NEXT WED')">
+          <span>🏭 Next Wednesday (Nov 11)</span>
+          <span style="font-size:11px;color:#34d399">PH Factory</span>
+        </button>
+      </div>
+      <button class="btn-cancel-modal" onclick="closeMoveModal()">Cancel</button>
+    </div>
+  </div>
 </body>
 </html>
