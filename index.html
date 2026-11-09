@@ -664,42 +664,41 @@
   <script>
     // Master Task List Strictly Structured with Exact Dates
     const masterSchedule = [
-      // SATURDAY, NOV 7 (TODAY)
-      { id: 'sa_mis', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
-      { id: 'sa_fp_ted', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false },
-      { id: 'fr_mgmt_timeline', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'fr_ph_follow', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'fr_late_ship', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
-      { id: 'w_elite', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'fr_elite_func', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ Elite Factory System: Update on Function & Feature Workflows', tag: 'Elite Factory', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'w_rd', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: true, completedAt: 'Completed' },
-      { id: 'w_timex_ph_price', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🏷️ Timex Sales Price for PH Factory', tag: 'Timex / PH', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'w_miyota_2034', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🔬 2034 Case Study for Miyota Movement', tag: 'Miyota', type: 'rd', done: true, completedAt: 'Completed' },
-      { id: 'w_movt', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🔒 Japanese Movement Price Comparison: Compare attached prices vs our price list (Confidential)', tag: 'Confidential', type: 'rd', done: false },
-      { id: 'w_ph_ob', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', done: false },
-      { id: 'w_lb_deliv', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', done: false },
-      { id: 'w_betty_disney', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', done: false },
-      { id: 'w_ice_watch', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', done: false },
-      { id: 'w_anita', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', done: false },
-      { id: 'th_factory', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'TODAY', text: '🏭 Go to PH Factory (Production, engineering & PMC review)', tag: 'Factory Visit', type: 'w', done: false },
-
-      // SUNDAY, NOV 8 (TOMORROW)
-      { id: 'su_design_2034', dateKey: 'Sun, Nov 8', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🎨 Design Ice Watch & Klasse14 (K14) using 2034 movement', tag: 'Design / K14', type: 'w', done: false },
-
-      // NEXT MONDAY, NOV 9
+      // MONDAY, NOV 9 (TODAY - INCLUDES ALL ACTIVE / CARRIED OVER TASKS)
+      { id: 'mo_k14_bf', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🛍️ Set up Klasse14 Black Friday Campaign', tag: 'Klasse14', type: 'w', done: false },
       { id: 'mo_paul_follow', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '⏳ Follow up on Paul\'s tasks (LB Factory component descriptions, vendor invoices, missing revenue, samples)', tag: 'LB Factory', type: 'hold', done: false },
       { id: 'mo_elite_remind', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🔔 Follow up with Elite Factory: Check if content provided to test the system (Waiting for Elite content)', tag: 'Elite Follow-up', type: 'hold', done: false },
       { id: 'mo_quote_app', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '📱 Customer Quotation App: Build & workflow scoping', tag: 'Quotation App', type: 'w', done: false },
       { id: 'mo_ph_sales', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts', tag: 'PH Factory', type: 'w', done: false },
       { id: 'mo_brew_email', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: false },
-      { id: 'mo_k14_bf', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🛍️ Set up Klasse14 Black Friday Campaign', tag: 'Klasse14', type: 'w', done: false },
 
-      // NEXT TUESDAY, NOV 10
+      // CARRIED OVER FROM NOV 7 & 8 (NEVER LOST)
+      { id: 'sa_mis', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🤖 Work on Watch & Jewellery Sector Management Information System (MIS)', tag: 'Sector MIS', type: 'w', done: false },
+      { id: 'sa_fp_ted', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🧠 Master Elon Musk First Principles & finalize AxiomAgent blueprint for Boss Ted', tag: 'Executive Priority', type: 'rd', done: false },
+      { id: 'fr_late_ship', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '📦 Late Shipment Audit System: Kick off root-cause analysis (factory vs client hold)', tag: 'Late Ship Audit', type: 'w', done: false },
+      { id: 'w_movt', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🔒 Japanese Movement Price Comparison: Compare attached prices vs our price list (Confidential)', tag: 'Confidential', type: 'rd', done: false },
+      { id: 'w_ph_ob', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🛠️ Fix OB Reports for PH Factory', tag: 'PH Factory', type: 'w', done: false },
+      { id: 'w_lb_deliv', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '⚙️ LB Production Component Delivery Fix', tag: 'LB Factory', type: 'w', done: false },
+      { id: 'w_betty_disney', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Betty Disney Design (Concept Development)', tag: 'Design', type: 'w', done: false },
+      { id: 'w_ice_watch', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: 'Ice Watch: Finish design (Pending Betty providing Bezel)', tag: 'Awaiting Bezel', type: 'hold', done: false },
+      { id: 'w_anita', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: 'Help Anita: Ask replenishment & new products from OB report', tag: 'Work', type: 'w', done: false },
+      { id: 'su_design_2034', dateKey: 'Mon, Nov 9', datePill: 'p-today', dayStatus: 'TODAY', text: '🎨 Design Ice Watch & Klasse14 (K14) using 2034 movement', tag: 'Design / K14', type: 'w', done: false },
+
+      // COMPLETED TASKS (SAVED IN DONE TAB)
+      { id: 'fr_mgmt_timeline', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '📊 Work on Action Timeline for Management & push to Operations Intelligence portal', tag: 'Operations Intel', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'fr_ph_follow', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: 'Follow up on PH Factory action items & R&D conversion progress', tag: 'Work', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'w_elite', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '🚀 Finish up Elite Factory System at Lovable & send link out', tag: 'Lovable', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'fr_elite_func', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '⚙️ Elite Factory System: Update on Function & Feature Workflows', tag: 'Elite Factory', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'w_rd', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '🎯 Finish the R&D-to-Production conversion system', tag: 'R&D Sprint', type: 'rd', done: true, completedAt: 'Completed' },
+      { id: 'w_timex_ph_price', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '🏷️ Timex Sales Price for PH Factory', tag: 'Timex / PH', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'w_miyota_2034', dateKey: 'Sat, Nov 7', datePill: 'p-today', dayStatus: 'COMPLETED', text: '🔬 2034 Case Study for Miyota Movement', tag: 'Miyota', type: 'rd', done: true, completedAt: 'Completed' },
+
+      // TUESDAY, NOV 10 (TOMORROW)
       { id: 'tu_ted_meeting', dateKey: 'Tue, Nov 10', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🤝 Meeting with Boss Ted: Review R&D-to-Production, First Principles, and propose Elite ERP', tag: 'Executive Meeting', type: 'rd', done: false },
       { id: 'tu_qc_invoice_alert', dateKey: 'Tue, Nov 10', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '⚡ Setup "After QC to Invoice" automated alert pipeline for LB & PH factories', tag: 'LB / PH Alert', type: 'w', done: false },
       { id: 'tu_ph_sales_cont', dateKey: 'Tue, Nov 10', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '📊 Continue PH Sales Analysis (Reconcile invoices & sales breakdown)', tag: 'PH Factory', type: 'w', done: false },
 
-      // NEXT WEDNESDAY, NOV 11
+      // WEDNESDAY, NOV 11
       { id: 'we_ph_factory', dateKey: 'Wed, Nov 11', datePill: 'p-today', dayStatus: 'WEDNESDAY', text: '🏭 At PH Factory whole day (On-site production, engineering & operations review)', tag: 'Factory Visit', type: 'w', done: false }
     ];
 
@@ -1094,21 +1093,36 @@
     }
 
     function renderGroupedByDate(taskList, container) {
-      const dateOrder = ['Mon, Nov 9', 'Tue, Nov 10', 'Wed, Nov 11'];
-      dateOrder.forEach(dk => {
-        const group = taskList.filter(t => t.dateKey === dk);
+      // Priority ordering for known dates, followed by any other dates
+      const priorityOrder = ['Mon, Nov 9', 'Tue, Nov 10', 'Wed, Nov 11', 'Sun, Nov 8', 'Sat, Nov 7'];
+      const seenDates = new Set(taskList.map(t => t.dateKey || 'Mon, Nov 9'));
+      const sortedDates = [];
+
+      priorityOrder.forEach(d => {
+        if (seenDates.has(d)) {
+          sortedDates.push(d);
+          seenDates.delete(d);
+        }
+      });
+      seenDates.forEach(d => sortedDates.push(d));
+
+      sortedDates.forEach(dk => {
+        const group = taskList.filter(t => (t.dateKey || 'Mon, Nov 9') === dk);
         if (group.length === 0) return;
 
         const sec = document.createElement('div');
         sec.className = 'date-section';
 
         const sample = group[0];
+        const statusText = dk === 'Mon, Nov 9' ? 'TODAY' : (dk === 'Tue, Nov 10' ? 'TOMORROW' : (sample.dayStatus || 'ACTIVE'));
+        const pillClass = dk === 'Mon, Nov 9' ? 'p-today' : (sample.datePill || 'p-tomorrow');
+
         sec.innerHTML = `
           <div class="date-header">
             <div class="date-title">
               <span>📅 ${dk}</span>
             </div>
-            <span class="date-pill ${sample.datePill}">${sample.dayStatus} (${group.length})</span>
+            <span class="date-pill ${pillClass}">${statusText} (${group.length})</span>
           </div>
           <div class="date-tasks"></div>
         `;
