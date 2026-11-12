@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Wayne's Dated Weekly Schedule</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1079,10 +1082,26 @@
       } else if (currentView === 'today') {
         const todayTasks = activeTasks.filter(t => t.dateKey === 'Mon, Nov 9');
         if (todayTasks.length === 0) {
-          container.innerHTML = '<div class="empty-box">🎉 All of today\'s tasks (Wed, Nov 4) are completed!</div>';
-          return;
+          container.innerHTML = '<div class="empty-box">🎉 All of today\'s tasks are completed!</div>';
+        } else {
+          renderGroupedByDate(todayTasks, container);
         }
-        renderGroupedByDate(todayTasks, container);
+
+        // Also display upcoming reminders (e.g. Nov 23 Futu update) below today's list
+        const upcomingTasks = activeTasks.filter(t => t.dateKey !== 'Mon, Nov 9');
+        if (upcomingTasks.length > 0) {
+          const upSec = document.createElement('div');
+          upSec.style.cssText = 'margin-top:22px;padding:14px;background:rgba(56,189,248,0.05);border:1px dashed rgba(56,189,248,0.3);border-radius:10px;';
+          upSec.innerHTML = `
+            <div style="font-size:11px;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+              <span>📌 Upcoming Scheduled Reminders (${upcomingTasks.length})</span>
+            </div>
+            <div class="upcoming-tasks-box"></div>
+          `;
+          const box = upSec.querySelector('.upcoming-tasks-box');
+          upcomingTasks.forEach(t => box.appendChild(createTaskCard(t)));
+          container.appendChild(upSec);
+        }
       } else if (currentView === 'done') {
         if (doneTasks.length === 0) {
           container.innerHTML = '<div class="empty-box">No completed tasks yet. Tap any task in To-Do to mark it done.</div>';
