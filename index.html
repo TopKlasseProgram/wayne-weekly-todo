@@ -502,7 +502,7 @@
       <div style="display:flex;align-items:center;gap:6px">
         <button onclick="resetLocalCache()" style="background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer" title="Purge old mobile cache and reload">🔄 Reset Cache</button>
         <button onclick="copyTickedTasks()" style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer">📋 Copy Ticked</button>
-        <div class="week-chip">SCHEDULE</div>
+        <div class="week-chip" id="syncStatusChip" style="display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;"></span>LIVE SYNCED</div>
       </div>
     </header>
 
@@ -712,6 +712,37 @@
 
     let currentView = 'active';
 
+    // ==========================================
+    // LIVE CLOUD DATABASE SYNC ENGINE (GITHUB GIST)
+    // ==========================================
+    const GIST_RAW_URL = 'https://gist.githubusercontent.com/TopKlasseProgram/a663de6a0f49a4f50496fd153294ab73/raw/sync.json';
+
+    async function fetchCloudDatabase() {
+      try {
+        const resp = await fetch(GIST_RAW_URL + '?nocache=' + Date.now());
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && Array.isArray(data.activeTasks)) {
+            localStorage.setItem('wayne_cloud_db_v1', JSON.stringify(data));
+            const chip = document.getElementById('syncStatusChip');
+            if (chip) chip.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;"></span>LIVE SYNCED';
+            render();
+          }
+        }
+      } catch(err) {
+        console.warn('Using local cache for tasks:', err);
+      }
+    }
+
+    function getCloudDatabase() {
+      try {
+        return JSON.parse(localStorage.getItem('wayne_cloud_db_v1') || 'null');
+      } catch(e) {
+        return null;
+      }
+    }
+
+
     // Universal Text Fingerprint to survive any future code updates or ID changes
     function getTaskFingerprint(task) {
       return (task.text || '')
@@ -838,27 +869,37 @@
     }
 
     function getAllTasks() {
+      const cloudDb = getCloudDatabase();
       const doneSet = getDoneSet();
       const custom = getCustomTasks();
-      const combined = [...custom, ...masterSchedule];
+      
+      let baseActive = masterSchedule.filter(t => !t.done);
+      let baseDone = masterSchedule.filter(t => t.done);
 
+      if (cloudDb && Array.isArray(cloudDb.activeTasks)) {
+        baseActive = cloudDb.activeTasks.map(t => ({ ...t, done: false }));
+        if (Array.isArray(cloudDb.doneTasks)) {
+          baseDone = cloudDb.doneTasks.map(t => ({ ...t, done: true, completedAt: t.completedAt || 'Completed' }));
+        }
+      }
+
+      const combined = [...custom, ...baseActive, ...baseDone];
       const seen = new Set();
       const list = [];
       const dateOverrides = getDateOverrides();
+
       for (const t of combined) {
         if (!seen.has(t.id)) {
           seen.add(t.id);
-          const masterMatch = masterSchedule.find(m => m.id === t.id);
-          const isMasterDone = masterMatch && masterMatch.done === true;
-          const isDone = isMasterDone || (t.done === true) || doneSet.has(t.id);
+          const isDone = (t.done === true) || doneSet.has(t.id);
           const override = dateOverrides[t.id];
           list.push({
             ...t,
-            dateKey: isDone ? 'Completed' : (override ? override.dateKey : (masterMatch ? masterMatch.dateKey : t.dateKey)),
-            datePill: override ? override.datePill : (masterMatch ? masterMatch.datePill : t.datePill),
-            dayStatus: isDone ? 'DONE' : (override ? override.dayStatus : (masterMatch ? masterMatch.dayStatus : t.dayStatus)),
+            dateKey: isDone ? 'Completed' : (override ? override.dateKey : t.dateKey),
+            datePill: override ? override.datePill : t.datePill,
+            dayStatus: isDone ? 'DONE' : (override ? override.dayStatus : t.dayStatus),
             done: isDone,
-            completedAt: t.completedAt || (masterMatch ? masterMatch.completedAt : null) || (isDone ? 'Completed' : null)
+            completedAt: t.completedAt || (isDone ? 'Completed' : null)
           });
         }
       }
