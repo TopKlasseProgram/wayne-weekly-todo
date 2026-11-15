@@ -672,11 +672,25 @@
       // ACTIVE TO-DO LIST FOR THIS COMING WEEK
       // ==========================================
       
-      // THIS COMING WEEK (SYSTEM ALERTS & FOLLOW-UPS)
-      { id: 'tu_qc_invoice_alert', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⚡ Setup "After QC to Invoice" automated alert pipeline for LB & PH factories', tag: 'LB / PH Alert', type: 'w', done: false },
-      { id: 'mo_elite_remind', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '🔔 Follow up with Elite Factory: Check if content provided to test the system (Waiting for Elite content)', tag: 'Elite Follow-up', type: 'hold', done: false },
-      { id: 'mo_paul_follow', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⏳ Follow up on Paul\'s tasks (LB Factory component descriptions, vendor invoices, missing revenue, samples)', tag: 'LB Factory', type: 'hold', done: false },
-      { id: 'tu_ph_sales_cont', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Continue PH Sales Analysis (Reconcile invoices & sales breakdown)', tag: 'PH Factory', type: 'w', done: false },
+      // MONDAY, NOV 16
+      { id: 'mo_ph_analysis', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Finish PH Analysis: Reconcile all invoice amounts, BOM costs & sales breakdown', tag: 'PH Factory', type: 'w', done: false },
+      { id: 'mo_lb_follow', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⏳ Audit LB Analysis (Part 1): Collect Paul\'s items (component descriptions, vendor invoices, missing revenue, samples)', tag: 'LB Factory', type: 'hold', done: false },
+      { id: 'mo_qc_alert', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⚡ Setup "After QC to Invoice" automated alert pipeline for LB & PH factories', tag: 'LB / PH Alert', type: 'w', done: false },
+
+      // TUESDAY, NOV 17
+      { id: 'tu_lb_audit', dateKey: 'Tue, Nov 17', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '📑 Audit LB Analysis (Part 2): Full sales vs cost audit & vendor invoice reconciliation', tag: 'LB Audit', type: 'w', done: false },
+      { id: 'tu_elite_finish', dateKey: 'Tue, Nov 17', datePill: 'p-tomorrow', dayStatus: 'TOMORROW', text: '🚀 Finish up Elite Factory System: Test system with Elite content & review feature workflows', tag: 'Elite Factory', type: 'w', done: false },
+
+      // WEDNESDAY, NOV 18
+      { id: 'we_smart_mfg_meeting', dateKey: 'Wed, Nov 18', datePill: 'p-today', dayStatus: 'WEDNESDAY', text: '🤝 2:00 PM — Meeting with Smart Manufacturing Team (Smart factory integration & production tracking)', tag: 'Executive Meeting', type: 'rd', done: false },
+      { id: 'we_plc_flow', dateKey: 'Wed, Nov 18', datePill: 'p-today', dayStatus: 'WEDNESDAY', text: '🔄 Review Product Life Cycle (PLC) Flow: Audit watch & jewellery stage-gates from R&D to Mass Production', tag: 'Product PLC', type: 'w', done: false },
+
+      // THURSDAY, NOV 19
+      { id: 'th_delivery_exfactory', dateKey: 'Thu, Nov 19', datePill: 'p-tomorrow', dayStatus: 'THURSDAY', text: '🚚 Check Delivery vs. Ex-Factory: Audit factory dispatch dates vs customer delivery dates (Identify root cause delays)', tag: 'Delivery Audit', type: 'w', done: false },
+      { id: 'th_elite_rollout', dateKey: 'Thu, Nov 19', datePill: 'p-tomorrow', dayStatus: 'THURSDAY', text: '⚙️ Elite Factory System: Final workflow sign-off & rollout confirmation with factory team', tag: 'Elite Rollout', type: 'w', done: false },
+
+      // FRIDAY, NOV 20
+      { id: 'fr_weekly_synthesis', dateKey: 'Fri, Nov 20', datePill: 'p-today', dayStatus: 'FRIDAY', text: '📊 Operations Synthesis: Consolidate LB, PH, Delivery vs Ex-factory & Smart Mfg action items into Operations Intelligence', tag: 'Operations Intel', type: 'w', done: false },
 
       // THE WEEK AFTER NEXT (WEEK OF NOV 23)
       { id: 'w2_lucia_sim_futu', dateKey: 'Mon, Nov 23', datePill: 'p-tomorrow', dayStatus: 'WEEK AFTER NEXT', text: '📱 Lucia SIM Card: Update phone number on Futu (富途)', tag: 'Personal / Futu', type: 'p', done: false },
@@ -688,7 +702,7 @@
       { id: 'tu_ted_meeting', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🤝 Meeting with Boss Ted: Review R&D-to-Production, First Principles, and propose Elite ERP', tag: 'Executive Meeting', type: 'rd', done: true, completedAt: 'Completed (Last Tuesday)' },
       { id: 'mo_k14_bf', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🛍️ Set up Klasse14 Black Friday Campaign', tag: 'Klasse14', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_quote_app', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📱 Customer Quotation App: Build & workflow scoping (Lovable Studio Live)', tag: 'Quotation App', type: 'w', done: true, completedAt: 'Completed' },
-      { id: 'mo_ph_sales', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts (Margin Analyzer Live)', tag: 'PH Factory', type: 'w', done: true, completedAt: 'Completed' },
+      { id: 'mo_ph_sales_old', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📊 Initial PH Sales Analysis & Margin Analyzer Setup (Lovable Live)', tag: 'PH Factory', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_brew_email', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '✉️ Email Brew Watch Co (Jonathan): Ask for invoice to process payment for July–Sept sales', tag: 'Brew Watch', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_ice_watch_fix', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🔧 Fix on Ice Watch Design (Apply design revisions & adjustments)', tag: 'Ice Watch', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'w_ice_watch', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: 'Ice Watch: Finish design (Bezel review completed)', tag: 'Ice Watch', type: 'w', done: true, completedAt: 'Completed' },
@@ -1194,7 +1208,7 @@
 
     function renderGroupedByDate(taskList, container) {
       // Priority ordering for current and upcoming dates
-      const priorityOrder = ['Mon, Nov 16', 'Mon, Nov 23', 'Sun, Nov 15'];
+      const priorityOrder = ['Mon, Nov 16', 'Tue, Nov 17', 'Wed, Nov 18', 'Thu, Nov 19', 'Fri, Nov 20', 'Mon, Nov 23', 'Sun, Nov 15'];
       const seenDates = new Set(taskList.map(t => t.dateKey || 'Mon, Nov 9'));
       const sortedDates = [];
 
