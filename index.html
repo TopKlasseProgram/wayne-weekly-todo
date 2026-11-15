@@ -500,6 +500,7 @@
         <span>🎯 Wayne's Schedule</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="resetLocalCache()" style="background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer" title="Purge old mobile cache and reload">🔄 Reset Cache</button>
         <button onclick="copyTickedTasks()" style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer">📋 Copy Ticked</button>
         <div class="week-chip">SCHEDULE</div>
       </div>
@@ -671,8 +672,7 @@
       // ACTIVE TO-DO LIST FOR THIS COMING WEEK
       // ==========================================
       
-      // MONDAY, NOV 16 (EXECUTIVE FOCUS & SYSTEM ALERTS)
-      { id: 'tu_ted_meeting', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '🤝 Meeting with Boss Ted: Review R&D-to-Production, First Principles, and propose Elite ERP', tag: 'Executive Meeting', type: 'rd', done: false },
+      // THIS COMING WEEK (SYSTEM ALERTS & FOLLOW-UPS)
       { id: 'tu_qc_invoice_alert', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⚡ Setup "After QC to Invoice" automated alert pipeline for LB & PH factories', tag: 'LB / PH Alert', type: 'w', done: false },
       { id: 'mo_elite_remind', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '🔔 Follow up with Elite Factory: Check if content provided to test the system (Waiting for Elite content)', tag: 'Elite Follow-up', type: 'hold', done: false },
       { id: 'mo_paul_follow', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⏳ Follow up on Paul\'s tasks (LB Factory component descriptions, vendor invoices, missing revenue, samples)', tag: 'LB Factory', type: 'hold', done: false },
@@ -687,6 +687,7 @@
       // ==========================================
       // COMPLETED TASKS (PERMANENTLY IN DONE TAB)
       // ==========================================
+      { id: 'tu_ted_meeting', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🤝 Meeting with Boss Ted: Review R&D-to-Production, First Principles, and propose Elite ERP', tag: 'Executive Meeting', type: 'rd', done: true, completedAt: 'Completed (Last Tuesday)' },
       { id: 'mo_k14_bf', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🛍️ Set up Klasse14 Black Friday Campaign', tag: 'Klasse14', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_quote_app', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📱 Customer Quotation App: Build & workflow scoping (Lovable Studio Live)', tag: 'Quotation App', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_ph_sales', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📊 PH Sales Analysis: Check back and reconcile all invoice amounts (Margin Analyzer Live)', tag: 'PH Factory', type: 'w', done: true, completedAt: 'Completed' },
@@ -849,15 +850,17 @@
       for (const t of combined) {
         if (!seen.has(t.id)) {
           seen.add(t.id);
-          const isDone = (t.done === true) || doneSet.has(t.id);
+          const masterMatch = masterSchedule.find(m => m.id === t.id);
+          const isMasterDone = masterMatch && masterMatch.done === true;
+          const isDone = isMasterDone || (t.done === true) || doneSet.has(t.id);
           const override = dateOverrides[t.id];
           list.push({
             ...t,
-            dateKey: override ? override.dateKey : t.dateKey,
-            datePill: override ? override.datePill : t.datePill,
-            dayStatus: override ? override.dayStatus : t.dayStatus,
+            dateKey: isDone ? 'Completed' : (override ? override.dateKey : (masterMatch ? masterMatch.dateKey : t.dateKey)),
+            datePill: override ? override.datePill : (masterMatch ? masterMatch.datePill : t.datePill),
+            dayStatus: isDone ? 'DONE' : (override ? override.dayStatus : (masterMatch ? masterMatch.dayStatus : t.dayStatus)),
             done: isDone,
-            completedAt: t.completedAt || (isDone ? 'Completed' : null)
+            completedAt: t.completedAt || (masterMatch ? masterMatch.completedAt : null) || (isDone ? 'Completed' : null)
           });
         }
       }
@@ -885,6 +888,16 @@
       }
       saveDoneSet(doneSet);
       render();
+    }
+
+    function resetLocalCache() {
+      if (confirm("Reset mobile cache and sync with official master list?")) {
+        localStorage.removeItem('wayne_custom_tasks');
+        localStorage.removeItem('wayne_date_overrides');
+        localStorage.removeItem('wayne_done_ids_v1');
+        localStorage.removeItem('wayne_task_completions');
+        window.location.href = window.location.pathname + '?reset=' + Date.now();
+      }
     }
 
     function copyTickedTasks() {
