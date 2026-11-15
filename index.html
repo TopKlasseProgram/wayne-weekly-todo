@@ -678,15 +678,13 @@
       { id: 'mo_paul_follow', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '⏳ Follow up on Paul\'s tasks (LB Factory component descriptions, vendor invoices, missing revenue, samples)', tag: 'LB Factory', type: 'hold', done: false },
       { id: 'tu_ph_sales_cont', dateKey: 'Mon, Nov 16', datePill: 'p-today', dayStatus: 'TODAY', text: '📊 Continue PH Sales Analysis (Reconcile invoices & sales breakdown)', tag: 'PH Factory', type: 'w', done: false },
 
-      // WEDNESDAY, NOV 18 (FACTORY ON-SITE)
-      { id: 'we_ph_factory', dateKey: 'Wed, Nov 18', datePill: 'p-tomorrow', dayStatus: 'WEDNESDAY', text: '🏭 At PH Factory whole day (On-site production, engineering & operations review)', tag: 'Factory Visit', type: 'w', done: false },
-
       // THE WEEK AFTER NEXT (WEEK OF NOV 23)
       { id: 'w2_lucia_sim_futu', dateKey: 'Mon, Nov 23', datePill: 'p-tomorrow', dayStatus: 'WEEK AFTER NEXT', text: '📱 Lucia SIM Card: Update phone number on Futu (富途)', tag: 'Personal / Futu', type: 'p', done: false },
 
       // ==========================================
       // COMPLETED TASKS (PERMANENTLY IN DONE TAB)
       // ==========================================
+      { id: 'we_ph_factory', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🏭 At PH Factory whole day (On-site production, engineering & operations review)', tag: 'Factory Visit', type: 'w', done: true, completedAt: 'Completed (Last Wednesday)' },
       { id: 'tu_ted_meeting', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🤝 Meeting with Boss Ted: Review R&D-to-Production, First Principles, and propose Elite ERP', tag: 'Executive Meeting', type: 'rd', done: true, completedAt: 'Completed (Last Tuesday)' },
       { id: 'mo_k14_bf', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '🛍️ Set up Klasse14 Black Friday Campaign', tag: 'Klasse14', type: 'w', done: true, completedAt: 'Completed' },
       { id: 'mo_quote_app', dateKey: 'Completed', datePill: 'p-today', dayStatus: 'DONE', text: '📱 Customer Quotation App: Build & workflow scoping (Lovable Studio Live)', tag: 'Quotation App', type: 'w', done: true, completedAt: 'Completed' },
@@ -1155,7 +1153,7 @@
 
     function renderGroupedByDate(taskList, container) {
       // Priority ordering for current and upcoming dates
-      const priorityOrder = ['Mon, Nov 16', 'Wed, Nov 18', 'Mon, Nov 23', 'Sun, Nov 15'];
+      const priorityOrder = ['Mon, Nov 16', 'Mon, Nov 23', 'Sun, Nov 15'];
       const seenDates = new Set(taskList.map(t => t.dateKey || 'Mon, Nov 9'));
       const sortedDates = [];
 
